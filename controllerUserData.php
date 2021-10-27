@@ -1,6 +1,7 @@
 <?php 
 session_start();
 require "connection.php";
+require 'env.php';
 $email = "";
 $name = "";
 $errors = array();
@@ -29,7 +30,7 @@ if(isset($_POST['signup'])){
         if($data_check){
             $subject = "Email Verification Code";
             $message = "Your verification code is $code";
-            $sender = "From: @gmail.com";
+            $sender = "From: ".$sender_email;
             if(mail($email, $subject, $message, $sender)){
                 $info = "A verification code has been sent on your email - $email";
                 $_SESSION['info'] = $info;
@@ -114,7 +115,7 @@ if(isset($_POST['signup'])){
             if($run_query){
                 $subject = "Password Reset Code";
                 $message = "Your password reset code is $code";
-                $sender = "From: @gmail.com";
+                $sender = "From: ".$sender_email;
                 if(mail($email, $subject, $message, $sender)){
                     $info = "Password reset otp has been sent on your email - $email";
                     $_SESSION['info'] = $info;
@@ -142,7 +143,7 @@ if(isset($_POST['signup'])){
             $fetch_data = mysqli_fetch_assoc($code_res);
             $email = $fetch_data['email'];
             $_SESSION['email'] = $email;
-            $info = "Please create a new password that you don't use on any other site.";
+            $info = "Please create a new password.";
             $_SESSION['info'] = $info;
             header('location: new-password.php');
             exit();
@@ -157,7 +158,7 @@ if(isset($_POST['signup'])){
         $password = mysqli_real_escape_string($con, $_POST['password']);
         $cpassword = mysqli_real_escape_string($con, $_POST['cpassword']);
         if($password !== $cpassword){
-            $errors['password'] = "Confirm password not matched!";
+            $errors['password'] = "Confirm password does not match!";
         }else{
             $code = 0;
             $email = $_SESSION['email']; //getting this email using session
