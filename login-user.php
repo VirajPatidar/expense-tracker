@@ -8,10 +8,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1 class="h1 ms-5 pt-5">Expense Tracker</h1>
+    <h1 class="h4 ms-5 ps-5 fst-italic"> - The perfect tool to manage your finances</h1>
     <div class="container">
         <div class="row">
             <div class="col-md-7">
-
+               <img src="images/wallet.svg" alt="wallet"  height="400"/>
             </div>
             <div class="col-md-4 form login-form">
                 <form action="login-user.php" method="POST" autocomplete="">
