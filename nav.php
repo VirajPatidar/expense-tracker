@@ -43,8 +43,8 @@ function active($currect_page){
                 <span class="font-monospace me-2"><?php echo $fetch_info['name'] ?></span>
             </a>
             <ul class="dropdown-menu me-5" aria-labelledby="dropdownMenuLink">
-                <li><a class="dropdown-item" href="new-password.php">Change Password</a></li>
-                <li><a class="dropdown-item" href="logout-user.php"><i class="fa fa-sign-out" aria-hidden="true"></i>LOGOUT</a></li>
+                <li><a class="dropdown-item" href="new-password.php"><i class="fa fa-lg fa-lock me-2" aria-hidden="true"></i>Change Password</a></li>
+                <li><a class="dropdown-item" href="logout-user.php"><i class="fa fa-lg fa-sign-out me-2" aria-hidden="true"></i>LOGOUT</a></li>
             </ul>
         </div>
     </div>
