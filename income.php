@@ -1,4 +1,6 @@
-<?php require_once "controllerUserData.php"; ?>
+<?php require_once "controllerUserData.php"; 
+require "connection.php";
+?>
 <?php 
 $email = $_SESSION['email'];
 $password = $_SESSION['password'];
@@ -123,8 +125,8 @@ if($email != false && $password != false){
                                     <tr>
                                         <th>Name</th>
                                         <th>Category</th>
-                                        <th>Date</th>
                                         <th>Amount</th>
+                                        <th>Category</th>
                                         <th>
                                             <a href="#create" class="btn p-2" style="height: 2.5em; width: 2.5em; "
                                                 data-bs-toggle="modal"><i class="fa fa-lg fa-plus-circle"
@@ -132,7 +134,32 @@ if($email != false && $password != false){
                                         </th>
                                     </tr>
                                 </thead>
-                                <?php include "table_data_dump.php" ;?>
+                                <tbody>
+                                    <?php
+                                    $income_data = "SELECT * FROM income";
+                                    $res = mysqli_query($con, $income_data);
+                                    if (mysqli_num_rows($res) > 0) {
+                                        // output data of each row
+                                        while($row = mysqli_fetch_array($res)) {
+                                    ?>
+                                            <tr>
+                                                <td><?php echo $row["name_"]; ?></td>
+                                                <td><?php echo$row["category_"]; ?></td>
+                                                <td><?php echo $row["value_"]; ?></td>
+                                                <td><?php echo $row["date_"]; ?></td>
+                                                <td>
+                                                    <a href="#edit" class="btn p-2" style="height: 2.5em; width: 2.5em; " data-bs-toggle="modal"><i class="fa fa-lg fa-edit"></i></a>
+                                                    <a href="#delete" class="btn p-2" style="height: 2.5em; width: 2.5em; " data-bs-toggle="modal"><i class="fa fa-lg fa-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                        }
+                                      } else {
+                                        echo "0 results";
+                                      }
+                                    ?>
+                                   
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -162,13 +189,31 @@ if($email != false && $password != false){
                         <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
                         <div class="col-9">
                             <select class="form-control" id="role">
-                                <option>Salary</option>
-                                <option>Mutual Fund</option>
-                                <option>Crypto</option>
-                                <option>Interest</option>
-                                <option>Fixed Deposit</option>
-                                <option>Others</option>
+                                <?php
+                                $categories = "SELECT category_ FROM income";
+                                $res = mysqli_query($con, $income_data);
+                                if (mysqli_num_rows($res) > 0) {
+                                    while($row = mysqli_fetch_array($res)) {
+                                ?>
+                                        <option><?php echo $row["category_"] ?></option>
+                                <?php
+                                    }
+                                ?>
+                                    <option>Other</option>
+                                <?php
+                                } else {
+                                ?>
+                                    <option>Create category</option>
+                                <?php
+                                }
+                                ?>
                             </select>
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <label for="new_category" class="col-3 col-form-label"><strong>New Category</strong></label>
+                        <div class="col-9">
+                            <input type="text" class="form-control" id="new_category">
                         </div>
                     </div>
                     <div class="form-group row mt-2 mb-3">
