@@ -1,4 +1,5 @@
 <?php require_once "controllerUserData.php"; 
+require_once "controllerIncomeData.php";
 require "connection.php";
 ?>
 <?php 
@@ -178,20 +179,20 @@ if($email != false && $password != false){
         </div>
         <div class="modal-body">
             <div class="container">
-                <form>
+                <form action="income.php" method="POST" autocomplete="">
                     <div class="form-group row mt-2">
                         <label for="name" class="col-3 col-form-label"><strong>Name</strong></label>
                         <div class="col-9">
-                            <input type="text" class="form-control" id="name">
+                            <input type="text" class="form-control" id="name" name="name">
                         </div>
                     </div>
                     <div class="form-group row mt-2">
                         <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
                         <div class="col-9">
-                            <select class="form-control" id="role">
+                            <select class="form-control" id="role" name="category">
                                 <?php
-                                $categories = "SELECT category_ FROM income";
-                                $res = mysqli_query($con, $income_data);
+                                $categories = "SELECT DISTINCT category_ FROM income";
+                                $res = mysqli_query($con, $categories);
                                 if (mysqli_num_rows($res) > 0) {
                                     while($row = mysqli_fetch_array($res)) {
                                 ?>
@@ -211,19 +212,25 @@ if($email != false && $password != false){
                         </div>
                     </div>
                     <div class="form-group row mt-2">
-                        <label for="new_category" class="col-3 col-form-label"><strong>New Category</strong></label>
+                        <label for="new-category" class="col-3 col-form-label"><strong>New Category</strong></label>
                         <div class="col-9">
-                            <input type="text" class="form-control" id="new_category">
+                            <input type="text" class="form-control" id="new-category" name="new-category">
+                        </div>
+                    </div>
+                    <div class="form-group row mt-2">
+                        <label for="amount" class="col-3 col-form-label"><strong>Amount</strong></label>
+                        <div class="col-9">
+                            <input type="int" class="form-control" id="amount" name="amount">
                         </div>
                     </div>
                     <div class="form-group row mt-2 mb-3">
                         <label for="date" class="col-3 col-form-label"><strong>Date</strong></label>
                         <div class="col-9">
-                            <input type="date" class="form-control" id="date">
+                            <input type="date" class="form-control" id="date" name="date">
                         </div>
                     </div>
                     <div class="form-group row d-flex">
-                        <button type="submit" class="btn btn-primary" style="width: 70px">Save</button>
+                        <button type="submit" name="add-income" class="btn btn-primary" style="width: 70px">Save</button>
                         <button type="button" class="btn btn-secondary ms-2" style="width: 70px" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -293,10 +300,10 @@ if($email != false && $password != false){
             <div class="modal-body">
                 <div class="container">
                     <h5>Are you sure you want to delete this record?</h5> <br>
-                    <form>
+                    <form action="income.php" method="POST" autocomplete="">
                         <div class="form-group row">
                             <div class="col-3 text-nowrap">
-                                <button type="submit" class="btn" style="background-color: #df4b4b; color: #ffffff">Delete User</button>
+                                <button type="submit" name="delete-income" class="btn" style="background-color: #df4b4b; color: #ffffff">Delete User</button>
                             </div>
                             <div class="col-2">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
