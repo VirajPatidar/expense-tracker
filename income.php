@@ -24,6 +24,10 @@ if($email != false && $password != false){
     header('Location: login-user.php');
 }
 ?>
+
+<?php
+echo $_POST["id"];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,7 +131,7 @@ if($email != false && $password != false){
                                         <th>Name</th>
                                         <th>Category</th>
                                         <th>Amount</th>
-                                        <th>Category</th>
+                                        <th>Date</th>
                                         <th>
                                             <a href="#create" class="btn p-2" style="height: 2.5em; width: 2.5em; "
                                                 data-bs-toggle="modal"><i class="fa fa-lg fa-plus-circle"
@@ -144,13 +148,13 @@ if($email != false && $password != false){
                                         while($row = mysqli_fetch_array($res)) {
                                     ?>
                                             <tr>
-                                                <td><?php echo $row["name_"]; ?></td>
-                                                <td><?php echo$row["category_"]; ?></td>
-                                                <td><?php echo $row["value_"]; ?></td>
-                                                <td><?php echo $row["date_"]; ?></td>
+                                                <td><?php echo $row["name"]; ?></td>
+                                                <td><?php echo $row["category"]; ?></td>
+                                                <td><?php echo $row["value"]; ?></td>
+                                                <td><?php echo $row["date"]; ?></td>
                                                 <td>
-                                                    <a href="#edit" class="btn p-2" style="height: 2.5em; width: 2.5em; " data-bs-toggle="modal"><i class="fa fa-lg fa-edit"></i></a>
-                                                    <a href="#delete" class="btn p-2" style="height: 2.5em; width: 2.5em; " data-bs-toggle="modal"><i class="fa fa-lg fa-trash"></i></a>
+                                                    <button type="submit" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#edit" data-bs-toggle="modal"><i class="fa fa-lg fa-edit"></i></a></button>
+                                                    <button type="submit" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#delete" data-bs-toggle="modal"><i class="fa fa-lg fa-trash"></i></a></button>          
                                                 </td>
                                             </tr>
                                     <?php
@@ -159,7 +163,7 @@ if($email != false && $password != false){
                                         echo "0 results";
                                       }
                                     ?>
-                                   
+                                
                                 </tbody>
                             </table>
                         </div>
@@ -191,12 +195,12 @@ if($email != false && $password != false){
                         <div class="col-9">
                             <select class="form-control" id="role" name="category">
                                 <?php
-                                $categories = "SELECT DISTINCT category_ FROM income";
+                                $categories = "SELECT DISTINCT category FROM income";
                                 $res = mysqli_query($con, $categories);
                                 if (mysqli_num_rows($res) > 0) {
                                     while($row = mysqli_fetch_array($res)) {
                                 ?>
-                                        <option><?php echo $row["category_"] ?></option>
+                                        <option><?php echo $row["category"] ?></option>
                                 <?php
                                     }
                                 ?>
@@ -315,7 +319,7 @@ if($email != false && $password != false){
         </div>
     </div>
 </div>
-    
+
     <!-- Chart Js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -404,12 +408,17 @@ if($email != false && $password != false){
     </script>
     <script>
         var minDate, maxDate;
+        // $("div.toolbar").html('From <input name="min" id="min" type="date" value="0"> / <input name="max" id="max" type="date" value="0">');
         // Custom filtering function which will search data in column four between two values
         $.fn.dataTable.ext.search.push(
             function( settings, data, dataIndex ) {
                 var min = minDate.val();
                 var max = maxDate.val();
                 var date = new Date( data[2] );
+                // var min_date = document.getElementById("min").value;
+                // var min = new Date(min_date);
+                // var max_date = document.getElementById("max").value;
+                // var max = new Date(max_date);
         
                 if (
                     ( min === null && max === null ) ||
