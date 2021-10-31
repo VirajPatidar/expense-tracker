@@ -28,6 +28,11 @@ if($email != false && $password != false){
     <title><?php echo $fetch_info['name'] ?> | Portfolio</title>
     <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        canvas{
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
     <?php include "nav.php"; ?>
@@ -112,7 +117,7 @@ if($email != false && $password != false){
 
                         <h5 class="mt-1">% of budget spent this month</h5>
                         <div class="progress mb-3" style="height: 20px;">
-                            <div class="progress-bar progress-bar-striped bg-dark progress-bar-animated" role="progressbar" style="width: 73%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">73%</div>
+                            <div class="progress-bar" role="progressbar" style="width: 73%; background-color:#1a237e !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">73%</div>
                         </div>
                         <br>
                         <a href="#budget" class="btn btn-primary" data-bs-toggle="modal">Set or Change Budget</a>
@@ -122,7 +127,7 @@ if($email != false && $password != false){
                     <div class="tab-pane fade" id="nav-income" role="tabpanel" aria-labelledby="nav-income-tab">
                         <div class="card border-primary" style="width: 23rem;">
                             <div class="card-body">
-                                <h5 class="card-title">Income earned this month: ₹140000</h5>
+                                <h5 class="card-title mb-0">Income earned this month: ₹140000</h5>
                             </div>
                         </div>
                         <br>
@@ -146,7 +151,7 @@ if($email != false && $password != false){
                     <div class="tab-pane fade" id="nav-expense" role="tabpanel" aria-labelledby="nav-expense-tab">
                         <div class="card border-danger" style="width: 21rem;">
                             <div class="card-body">
-                                <h5 class="card-title">This month's expenses: ₹80000</h5>
+                                <h5 class="card-title mb-0">This month's expenses: ₹80000</h5>
                             </div>
                         </div>
                         <br>
@@ -170,6 +175,15 @@ if($email != false && $password != false){
         </div>
         <br>
         <br>
+    </div>
+
+    <div class="container">
+        <h4 class="mb-2">Graphical Analysis</h4>
+        <div class="card shadow bg-body rounded">
+            <div class="card-body">
+                <canvas id="incomeVsexpense" width="900" height="600" style="margin 0 auto;"></canvas>
+            </div>
+        </div>
     </div>
 
     <!--Budget Modal-->
@@ -202,5 +216,47 @@ if($email != false && $password != false){
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Chart Js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('incomeVsexpense').getContext('2d');
+        const myChart2 = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [
+                    { 
+                        data: [48200, 75000, 41100, 50200, 63500, 60900, 94700],
+                        label: "Income",
+                        borderColor: "#3e95cd",
+                        fill: false
+                    }, 
+                    { 
+                        data: [38600, 81400, 50600, 40600, 10700, 71100, 73300],
+                        label: "Expense",
+                        borderColor: "#8e5ea2",
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Income Vs Expenses over time',
+                    },
+                    scales: {
+                        y: {
+                            suggestedMin: 1000,
+                            suggestedMax: 100000
+                        }
+                    }
+                },
+            }
+        });
+    </script>
+
 </body>
 </html>
