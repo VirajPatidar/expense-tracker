@@ -214,7 +214,7 @@ if($email != false && $password != false){
                                                 <td><?php echo $row["date"]; ?></td>
                                                 <td>
                                                     <button type="submit" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#edit" data-bs-toggle="modal"><i class="fa fa-lg fa-edit"></i></a></button>
-                                                    <button type="submit" onclick="hello(<?= $row['id'] ?>)" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#delete" data-bs-toggle="modal"><i class="fa fa-lg fa-trash"></i></a></button>          
+                                                    <button type="submit" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#delete" data-bs-toggle="modal"><i class="fa fa-lg fa-trash"></i></a></button>
                                                 </td>
                                             </tr>
                                     <?php
@@ -362,6 +362,7 @@ if($email != false && $password != false){
                 </div>
                 <div class="modal-body">
                     <div class="container">
+                        <?php echo $_SESSION["selectedId"] ?>
                         <h5>Are you sure you want to delete this record?</h5> <br>
                         <form action="income.php" method="POST" autocomplete="">
                             <div class="form-group row">
@@ -379,54 +380,92 @@ if($email != false && $password != false){
         </div>
     </div>
 
-    <script>
-        function hello(id) {
-            console.log(id);
-            <?php $x = "hello"; ?>
-            console.log(<?= $x ?>);
-        }
-    </script>
-    
-
     <!-- Chart Js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootsrap + JQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
     <script>
-        const ctx = document.getElementById('category').getContext('2d');
-        const myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Mutual Fund', 'Salary', 'Crypto', 'Interest', 'FD', 'Others'],
-                datasets: [{
-                    label: 'Income source from categories',
-                    data: [12, 19, 3, 5, 2, 3],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                responsive: false
-            }
+        // const ctx = document.getElementById('category').getContext('2d');
+        // const myChart = new Chart(ctx, {
+        //     type: 'bar',
+        //     data: {
+        //         labels: ['Mutual Fund', 'Salary', 'Crypto', 'Interest', 'FD', 'Others'],
+        //         datasets: [{
+        //             label: 'Income source from categories',
+        //             data: [12, 19, 3, 5, 2, 3],
+        //             backgroundColor: [
+        //                 'rgba(255, 99, 132, 0.2)',
+        //                 'rgba(54, 162, 235, 0.2)',
+        //                 'rgba(255, 206, 86, 0.2)',
+        //                 'rgba(75, 192, 192, 0.2)',
+        //                 'rgba(153, 102, 255, 0.2)',
+        //                 'rgba(255, 159, 64, 0.2)'
+        //             ],
+        //             borderColor: [
+        //                 'rgba(255, 99, 132, 1)',
+        //                 'rgba(54, 162, 235, 1)',
+        //                 'rgba(255, 206, 86, 1)',
+        //                 'rgba(75, 192, 192, 1)',
+        //                 'rgba(153, 102, 255, 1)',
+        //                 'rgba(255, 159, 64, 1)'
+        //             ],
+        //             borderWidth: 1
+        //         }]
+        //     },
+        //     options: {
+        //         scales: {
+        //             y: {
+        //                 beginAtZero: true
+        //             }
+        //         },
+        //         responsive: false
+        //     }
+        // });
+
+        $(document).ready(function () {
+            showGraph();
         });
+
+        function showGraph()
+        {
+            {
+                $.post("getIncomeData.php",
+                function (data)
+                {   
+                    console.log(data);
+                    var category = [];
+                    var value = [];
+
+                    for (var i in data) {
+                        category.push(data[i].category);
+                        value.push(data[i].value);
+                    }
+
+                    var chartdata = {
+                        labels: category,
+                        datasets: [
+                            {
+                                label: 'Income',
+                                backgroundColor: '#49e2ff',
+                                borderColor: '#46d5f1',
+                                hoverBackgroundColor: '#CCCCCC',
+                                hoverBorderColor: '#666666',
+                                data: value
+                            }
+                        ]
+                    };
+
+                    var graphTarget = $("#category");
+
+                    var barGraph = new Chart(graphTarget, {
+                        type: 'bar',
+                        data: chartdata
+                    });
+                });
+            }
+        }
     </script>
     <script>
         const ctx2 = document.getElementById('time').getContext('2d');
@@ -447,10 +486,6 @@ if($email != false && $password != false){
             }
         });
     </script>
-
-    <!-- Bootsrap + JQuery -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <!-- Datatables -->
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
