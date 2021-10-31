@@ -139,6 +139,7 @@ if($email != false && $password != false){
                                     if($amount2["amount"] == NULL)
                                         $amount2["amount"] = 0;
                                     $perc = ($amount2["amount"] - $amount1["amount"]) / $amount1["amount"] * 100;
+                                    $perc = number_format((float)$perc, 2, '.', '');
                                     echo $perc . "%";
                                 }
                             }
@@ -188,6 +189,7 @@ if($email != false && $password != false){
                                 class="table table-bordered text-nowrap text-center table-striped align-middle pt-3">
                                 <thead style="background-color: #f1f4fb">
                                     <tr>
+                                        <th>ID</th>
                                         <th>Name</th>
                                         <th>Category</th>
                                         <th>Amount</th>
@@ -208,13 +210,14 @@ if($email != false && $password != false){
                                         while($row = mysqli_fetch_array($res)) {
                                     ?>
                                             <tr>
+                                                <td><?php echo $row["id"]; ?></td>
                                                 <td><?php echo $row["name"]; ?></td>
                                                 <td><?php echo $row["category"]; ?></td>
                                                 <td><?php echo $row["value"]; ?></td>
                                                 <td><?php echo $row["date"]; ?></td>
                                                 <td>
-                                                    <button type="submit" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#edit" data-bs-toggle="modal"><i class="fa fa-lg fa-edit"></i></a></button>
-                                                    <button type="submit" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#delete" data-bs-toggle="modal"><i class="fa fa-lg fa-trash"></i></a></button>
+                                                    <button type="submit" class="btn p-2 editBtn" style="height: 2.5em; width: 2.5em; "><i class="fa fa-lg fa-edit"></i></button>
+                                                    <button type="submit" class="btn p-2 deleteBtn" style="height: 2.5em; width: 2.5em; "><i class="fa fa-lg fa-trash"></i></button>
                                                 </td>
                                             </tr>
                                     <?php
@@ -246,13 +249,13 @@ if($email != false && $password != false){
                         <div class="form-group row mt-2">
                             <label for="name" class="col-3 col-form-label"><strong>Name</strong></label>
                             <div class="col-9">
-                                <input type="text" class="form-control" id="name" name="name">
+                                <input type="text" class="form-control" id="name-create" name="name" placeholder="Enter Name">
                             </div>
                         </div>
                         <div class="form-group row mt-2">
                             <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
                             <div class="col-9">
-                                <select class="form-control" id="role" name="category">
+                                <select class="form-control" id="category-create" name="category" onchange="EnableTextBox(this)">
                                     <?php
                                     $categories = "SELECT DISTINCT category FROM income";
                                     $res = mysqli_query($con, $categories);
@@ -277,19 +280,19 @@ if($email != false && $password != false){
                         <div class="form-group row mt-2">
                             <label for="new-category" class="col-3 col-form-label"><strong>New Category</strong></label>
                             <div class="col-9">
-                                <input type="text" class="form-control" id="new-category" name="new-category">
+                                <input type="text" class="form-control" id="new-category-create" name="new-category" placeholder="Create new category" disabled>
                             </div>
                         </div>
                         <div class="form-group row mt-2">
                             <label for="amount" class="col-3 col-form-label"><strong>Amount</strong></label>
                             <div class="col-9">
-                                <input type="int" class="form-control" id="amount" name="amount">
+                                <input type="int" class="form-control" id="amount-create" name="amount" placeholder="Enter Amount">
                             </div>
                         </div>
                         <div class="form-group row mt-2 mb-3">
                             <label for="date" class="col-3 col-form-label"><strong>Date</strong></label>
                             <div class="col-9">
-                                <input type="date" class="form-control" id="date" name="date">
+                                <input type="date" class="form-control" id="date-create" name="date" placeholder="Enter Date">
                             </div>
                         </div>
                         <div class="form-group row d-flex">
@@ -308,45 +311,73 @@ if($email != false && $password != false){
     <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="editLabel">Edit Income Record</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="container">
-                    <form>
-                        <div class="form-group row mt-2">
-                            <label for="name" class="col-3 col-form-label"><strong>Name</strong></label>
-                            <div class="col-9">
-                                <input type="text" class="form-control" id="name">
-                            </div>
-                        </div>
-                        <div class="form-group row mt-2">
-                            <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
-                            <div class="col-9">
-                                <select class="form-control" id="role">
-                                    <option>Salary</option>
-                                    <option>Mutual Fund</option>
-                                    <option>Crypto</option>
-                                    <option>Interest</option>
-                                    <option>Fixed Deposit</option>
-                                    <option>Others</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row mt-2 mb-3">
-                            <label for="date" class="col-3 col-form-label"><strong>Date</strong></label>
-                            <div class="col-9">
-                                <input type="date" class="form-control" id="date">
-                            </div>
-                        </div>
-                        <div class="form-group row d-flex">
-                            <button type="submit" class="btn btn-primary" style="width: 130px">Save Changes</button>
-                            <button type="button" class="btn btn-secondary ms-2" style="width: 70px" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </form>
+                <div class="modal-header">
+                    <h4 class="modal-title" id="editLabel">Edit Income Record</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
+                <div class="modal-body">
+                    <h6>Keep fields empty if no change.</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <form action="income.php" method="POST" autocomplete="">
+                            <input hidden id="hiddenInput1" name="hiddenInput1" />
+                            <div class="form-group row mt-2">
+                                <label for="name" class="col-3 col-form-label"><strong>Name</strong></label>
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name">
+                                </div>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
+                                <div class="col-9">
+                                    <select class="form-control" id="category" name="category" onchange="EnableTextBox(this)">
+                                        <?php
+                                        $categories = "SELECT DISTINCT category FROM income";
+                                        $res = mysqli_query($con, $categories);
+                                        if (mysqli_num_rows($res) > 0) {
+                                            while($row = mysqli_fetch_array($res)) {
+                                        ?>
+                                                <option><?php echo $row["category"] ?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                            <option>Other</option>
+                                        <?php
+                                        } else {
+                                        ?>
+                                            <option>Create category</option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <label for="new-category" class="col-3 col-form-label"><strong>New Category</strong></label>
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="new-category" name="new-category" placeholder="Create new category" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-2">
+                                <label for="amount" class="col-3 col-form-label"><strong>Amount</strong></label>
+                                <div class="col-9">
+                                    <input type="int" class="form-control" id="amount" name="amount" placeholder="Enter Amount">
+                                </div>
+                            </div>
+                            <div class="form-group row mt-2 mb-3">
+                                <label for="date" class="col-3 col-form-label"><strong>Date</strong></label>
+                                <div class="col-9">
+                                    <input type="date" class="form-control" id="date" name="date" placeholder="Enter Date">
+                                </div>
+                            </div>
+                            <div class="form-group row d-flex">
+                                <button type="submit" name="edit-income" class="btn btn-primary" style="width: 70px">Save</button>
+                                <button type="button" class="btn btn-secondary ms-2" style="width: 70px" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -362,10 +393,10 @@ if($email != false && $password != false){
                 </div>
                 <div class="modal-body">
                     <div class="container">
-                        <?php echo $_SESSION["selectedId"] ?>
                         <h5>Are you sure you want to delete this record?</h5> <br>
                         <form action="income.php" method="POST" autocomplete="">
                             <div class="form-group row">
+                                <input hidden id="hiddenInput2" name="hiddenInput2" />
                                 <div class="col-3 text-nowrap">
                                     <button type="submit" name="delete-income" class="btn" style="background-color: #df4b4b; color: #ffffff">Delete User</button>
                                 </div>
@@ -385,6 +416,59 @@ if($email != false && $password != false){
     <!-- Bootsrap + JQuery -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <script>
+        //Script for delete income
+        $(document).ready(function() {
+            $(".deleteBtn").on("click", function() {
+
+                $("#delete").modal("show");
+
+                $tr = $(this).closest("tr");
+                var data = $tr.children("td").map(function() {
+                    return $(this).text();
+                }).get();
+
+                $("#hiddenInput2").val(data[0]);
+            })
+
+        })
+
+        //Script for edit income
+        $(document).ready(function() {
+            $(".editBtn").on("click", function() {
+
+                $("#edit").modal("show");
+
+                $tr = $(this).closest("tr");
+                var data = $tr.children("td").map(function() {
+                    return $(this).text();
+                }).get();
+
+                console.log(data);
+                $("#hiddenInput1").val(data[0]);
+                $("#name").val(data[1]);
+                $("#category").val(data[2]).change()
+                $("#amount").val(data[3]);
+                $("#date").val(data[4]);
+            })
+
+        })
+    </script>
+
+    <script>
+        function EnableTextBox(ddlModels) {
+            var selectedValue = ddlModels.options[ddlModels.selectedIndex].value;
+            var create_input = document.getElementById("new-category-create");
+            var edit_input = document.getElementById("new-category");
+            create_input.disabled = selectedValue == "Other" ? false : true;
+            edit_input.disabled = selectedValue == "Other" ? false : true;
+            if (!create_input.disabled)
+                create_input.focus();
+            if (!edit_input.disabled)
+                edit_input.focus();
+    }
+    </script>
 
     <script>
         // const ctx = document.getElementById('category').getContext('2d');
@@ -434,7 +518,7 @@ if($email != false && $password != false){
                 $.post("getIncomeData.php",
                 function (data)
                 {   
-                    console.log(data);
+                    // console.log(data);
                     var category = [];
                     var value = [];
 
@@ -517,8 +601,7 @@ if($email != false && $password != false){
             function( settings, data, dataIndex ) {
                 var min = minDate.val();
                 var max = maxDate.val();
-                var date = new Date( data[3] );
-                console.log(min, max, date)
+                var date = new Date( data[4] );
                 // var min_date = document.getElementById("min").value;
                 // var min = new Date(min_date);
                 // var max_date = document.getElementById("max").value;
@@ -544,7 +627,6 @@ if($email != false && $password != false){
             maxDate = new DateTime($('#max'), {
                 format: 'MMMM Do YYYY'
             });
-            console.log(minDate.val(), maxDate.val())
             // DataTables initialisation
             var table = $('#example').DataTable();
         
