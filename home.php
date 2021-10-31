@@ -45,6 +45,7 @@ if($email != false && $password != false){
                     </div>
                 </nav>
             </div>
+
             <div class="card-body">
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-budget" role="tabpanel" aria-labelledby="nav-budget-tab">
@@ -116,12 +117,32 @@ if($email != false && $password != false){
                         <br>
                         <a href="#budget" class="btn btn-primary" data-bs-toggle="modal">Set or Change Budget</a>
                     </div>
+
+
                     <div class="tab-pane fade" id="nav-income" role="tabpanel" aria-labelledby="nav-income-tab">
-                        <h5 class="card-title">Income earned this month: ₹140000</h5>
-                        <h5 class="card-title">Average income of last 6 months: ₹130000</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                        <div class="card border-primary" style="width: 23rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Income earned this month: ₹140000</h5>
+                            </div>
+                        </div>
+                        <br>
+                        <h5 class="card-title">Last 10 income entries</h5>
+                        <table class="table table-striped table-hover table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">category</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
+                            </thead>
+                            <?php include "home_page_table_data_dump.php"; ?>
+                        </table>
                         <a href="income.php" class="btn btn-primary">Show detailed income statistics</a>
                     </div>
+
+
                     <div class="tab-pane fade" id="nav-expense" role="tabpanel" aria-labelledby="nav-expense-tab">
                         <h5 class="card-title">This month's expenses: ₹80000</h5>
                         <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
@@ -130,6 +151,8 @@ if($email != false && $password != false){
                 </div>
             </div>
         </div>
+        <br>
+        <br>
     </div>
 
     <!--Budget Modal-->
