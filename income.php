@@ -514,41 +514,35 @@ if($email != false && $password != false){
 
         function showGraph()
         {
-            {
-                $.post("getIncomeData.php",
-                function (data)
-                {   
-                    // console.log(data);
-                    var category = [];
-                    var value = [];
-
-                    for (var i in data) {
-                        category.push(data[i].category);
-                        value.push(data[i].value);
-                    }
-
-                    var chartdata = {
-                        labels: category,
-                        datasets: [
-                            {
-                                label: 'Income',
-                                backgroundColor: '#49e2ff',
-                                borderColor: '#46d5f1',
-                                hoverBackgroundColor: '#CCCCCC',
-                                hoverBorderColor: '#666666',
-                                data: value
-                            }
-                        ]
-                    };
-
-                    var graphTarget = $("#category");
-
-                    var barGraph = new Chart(graphTarget, {
-                        type: 'bar',
-                        data: chartdata
-                    });
+            $.post("getIncomeBarGraphData.php",
+            function (data)
+            {   
+                console.log(data);
+                var category = [];
+                var value = [];
+                for (var i in data) {
+                    category.push(data[i].category);
+                    value.push(data[i].value);
+                }
+                var chartdata = {
+                    labels: category,
+                    datasets: [
+                        {
+                            label: 'Income',
+                            backgroundColor: '#49e2ff',
+                            borderColor: '#46d5f1',
+                            hoverBackgroundColor: '#CCCCCC',
+                            hoverBorderColor: '#666666',
+                            data: value
+                        }
+                    ]
+                };
+                var graphTarget = $("#category");
+                var barGraph = new Chart(graphTarget, {
+                    type: 'bar',
+                    data: chartdata
                 });
-            }
+            });
         }
     </script>
     <script>

@@ -10,6 +10,7 @@ function console_log($output, $with_script_tags = true) {
     }
     echo $js_code;
 }
+
 //if user adds new income
 if(isset($_POST['add-income'])){
     $name = mysqli_real_escape_string($con, $_POST['name']);

@@ -4,7 +4,7 @@
 
     header('Content-Type: application/json');
 
-    $sqlQuery = "SELECT * from income where email='" . $_SESSION["email"] . "';";
+    $sqlQuery = "SELECT SUM(value) AS value, category from income where email='" . $_SESSION["email"] . "' GROUP BY category;";
 
     $result = mysqli_query($con, $sqlQuery);
 
