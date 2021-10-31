@@ -144,8 +144,25 @@ if($email != false && $password != false){
 
 
                     <div class="tab-pane fade" id="nav-expense" role="tabpanel" aria-labelledby="nav-expense-tab">
-                        <h5 class="card-title">This month's expenses: ₹80000</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                        <div class="card border-danger" style="width: 21rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">This month's expenses: ₹80000</h5>
+                            </div>
+                        </div>
+                        <br>
+                        <h5 class="card-title">Last 10 expense entries</h5>
+                        <table class="table table-striped table-hover table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">category</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
+                            </thead>
+                            <?php include "home_page_table_data_dump.php"; ?>
+                        </table>
                         <a href="expense.php" class="btn btn-primary">Show detailed expense statistics</a>
                     </div>
                 </div>
