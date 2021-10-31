@@ -25,9 +25,6 @@ if($email != false && $password != false){
 }
 ?>
 
-<?php
-echo $_POST["id"];
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +53,20 @@ echo $_POST["id"];
                     <div class="card-header h6">This month's income</div>
                     <div class="card-body text-success">
                         <h5 class="card-title"><?php echo date('F Y'); ?></h5>
-                        <p class="card-text display-4 text-dark">₹150000</p>
+                        <p class="card-text display-4 text-dark">
+                            <?php
+                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                            $query = "SELECT sum(value) AS amount FROM income WHERE email = '" . $_SESSION['email'] . "' AND date >= '" . $date_min . "';";
+                            $res = mysqli_query($con, $query);
+                            if (mysqli_num_rows($res) > 0) {
+                                $amount = mysqli_fetch_array($res);
+                                echo "₹" . $amount["amount"];
+                            }
+                            else {
+                                echo "₹0";
+                            }
+                            ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -65,7 +75,21 @@ echo $_POST["id"];
                     <div class="card-header h6">Previous month's income</div>
                     <div class="card-body text-primary">
                         <h5 class="card-title"><?php echo date('F Y', mktime(0, 0, 0, date('m')-1, 1, date('Y')));?></h5>
-                        <p class="card-text display-4 text-dark">₹137000</p>
+                        <p class="card-text display-4 text-dark">
+                            <?php
+                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-1, 1, date('Y')));
+                            $date_max = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                            $query = "SELECT sum(value) AS amount FROM income WHERE email = '" . $_SESSION['email'] . "' AND date >= '" . $date_min . "' AND date < '" . $date_max . "';";
+                            $res = mysqli_query($con, $query);
+                            if (mysqli_num_rows($res) > 0) {
+                                $amount = mysqli_fetch_array($res);
+                                if($amount["amount"] != NULL) 
+                                    echo "₹" . $amount["amount"];
+                                else
+                                    echo "₹0";
+                            }
+                            ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -74,16 +98,52 @@ echo $_POST["id"];
                     <div class="card-header h6">This year's income</div>
                     <div class="card-body">
                         <h5 class="card-title" style="color: #00acc1"><?php echo date("Y",strtotime("-1 year"));?> - <?php echo date('Y'); ?></h5>
-                        <p class="card-text display-4 text-dark">₹1650000</p>
+                        <p class="card-text display-4 text-dark">
+                            <?php
+                            $date_min = date('Y-m-d', mktime(0, 0, 0, 1, 1, date('Y')));
+                            $query = "SELECT sum(value) AS amount FROM income WHERE email = '" . $_SESSION['email'] . "' AND date >= '" . $date_min . "';";
+                            $res = mysqli_query($con, $query);
+                            if (mysqli_num_rows($res) > 0) {
+                                $amount = mysqli_fetch_array($res);
+                                if($amount["amount"] != NULL) 
+                                    echo "₹" . $amount["amount"];
+                                else
+                                    echo "₹0";
+                            }
+                            ?>
+                        </p>
                     </div>
                 </div>
             </div>
             <div class="col-3">
                 <div class="card border-warning mb-3" style="max-width: 18rem;">
-                    <div class="card-header h6">% increase from last year</div>
+                    <div class="card-header h6">% change from last year</div>
                     <div class="card-body">
                         <h5 class="card-title" style="color: #e65100">Compared to <?php echo date("Y",strtotime("-1 year"));?></h5>
-                        <p class="card-text display-4 text-dark">15.3 %</p>
+                        <p class="card-text display-4 text-dark">
+                            <?php
+                            $date_min = date('Y-m-d', mktime(0, 0, 0, 1, 1, date('Y')-1));
+                            $date_max = date('Y-m-d', mktime(0, 0, 0, 1, 1, date('Y')));
+                            $query1 = "SELECT sum(value) AS amount FROM income WHERE email = '" . $_SESSION['email'] . "' AND date >= '" . $date_min . "' AND date < '" . $date_max . "';";
+                            $query2 = "SELECT sum(value) AS amount FROM income WHERE email = '" . $_SESSION['email'] . "' AND date >= '" . $date_max . "';";
+                            $res1 = mysqli_query($con, $query1);
+                            $res2 = mysqli_query($con, $query2);
+                            if (mysqli_num_rows($res1) > 0 && mysqli_num_rows($res2) > 0) {
+                                $amount1 = mysqli_fetch_array($res1);
+                                $amount2 = mysqli_fetch_array($res2);
+                                if($amount1["amount"] == NULL) {
+                                    $amount1["amount"] = 0;
+                                    echo "-";
+                                }
+                                else {
+                                    if($amount2["amount"] == NULL)
+                                        $amount2["amount"] = 0;
+                                    $perc = ($amount2["amount"] - $amount1["amount"]) / $amount1["amount"] * 100;
+                                    echo $perc . "%";
+                                }
+                            }
+                            ?>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -154,7 +214,7 @@ echo $_POST["id"];
                                                 <td><?php echo $row["date"]; ?></td>
                                                 <td>
                                                     <button type="submit" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#edit" data-bs-toggle="modal"><i class="fa fa-lg fa-edit"></i></a></button>
-                                                    <button type="submit" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#delete" data-bs-toggle="modal"><i class="fa fa-lg fa-trash"></i></a></button>          
+                                                    <button type="submit" onclick="hello(<?= $row['id'] ?>)" class="btn p-2" style="height: 2.5em; width: 2.5em; "><a href="#delete" data-bs-toggle="modal"><i class="fa fa-lg fa-trash"></i></a></button>          
                                                 </td>
                                             </tr>
                                     <?php
@@ -163,7 +223,6 @@ echo $_POST["id"];
                                         echo "0 results";
                                       }
                                     ?>
-                                
                                 </tbody>
                             </table>
                         </div>
@@ -174,151 +233,160 @@ echo $_POST["id"];
     </div>
 
     <!-- Create Modal -->
-<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="CreateLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title" id="CreateLabel">Add Income Record</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="container">
-                <form action="income.php" method="POST" autocomplete="">
-                    <div class="form-group row mt-2">
-                        <label for="name" class="col-3 col-form-label"><strong>Name</strong></label>
-                        <div class="col-9">
-                            <input type="text" class="form-control" id="name" name="name">
-                        </div>
-                    </div>
-                    <div class="form-group row mt-2">
-                        <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
-                        <div class="col-9">
-                            <select class="form-control" id="role" name="category">
-                                <?php
-                                $categories = "SELECT DISTINCT category FROM income";
-                                $res = mysqli_query($con, $categories);
-                                if (mysqli_num_rows($res) > 0) {
-                                    while($row = mysqli_fetch_array($res)) {
-                                ?>
-                                        <option><?php echo $row["category"] ?></option>
-                                <?php
-                                    }
-                                ?>
-                                    <option>Other</option>
-                                <?php
-                                } else {
-                                ?>
-                                    <option>Create category</option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row mt-2">
-                        <label for="new-category" class="col-3 col-form-label"><strong>New Category</strong></label>
-                        <div class="col-9">
-                            <input type="text" class="form-control" id="new-category" name="new-category">
-                        </div>
-                    </div>
-                    <div class="form-group row mt-2">
-                        <label for="amount" class="col-3 col-form-label"><strong>Amount</strong></label>
-                        <div class="col-9">
-                            <input type="int" class="form-control" id="amount" name="amount">
-                        </div>
-                    </div>
-                    <div class="form-group row mt-2 mb-3">
-                        <label for="date" class="col-3 col-form-label"><strong>Date</strong></label>
-                        <div class="col-9">
-                            <input type="date" class="form-control" id="date" name="date">
-                        </div>
-                    </div>
-                    <div class="form-group row d-flex">
-                        <button type="submit" name="add-income" class="btn btn-primary" style="width: 70px">Save</button>
-                        <button type="button" class="btn btn-secondary ms-2" style="width: 70px" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Edit Modal -->
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title" id="editLabel">Edit Income Record</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="container">
-                <form>
-                    <div class="form-group row mt-2">
-                        <label for="name" class="col-3 col-form-label"><strong>Name</strong></label>
-                        <div class="col-9">
-                            <input type="text" class="form-control" id="name">
-                        </div>
-                    </div>
-                    <div class="form-group row mt-2">
-                        <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
-                        <div class="col-9">
-                            <select class="form-control" id="role">
-                                <option>Salary</option>
-                                <option>Mutual Fund</option>
-                                <option>Crypto</option>
-                                <option>Interest</option>
-                                <option>Fixed Deposit</option>
-                                <option>Others</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row mt-2 mb-3">
-                        <label for="date" class="col-3 col-form-label"><strong>Date</strong></label>
-                        <div class="col-9">
-                            <input type="date" class="form-control" id="date">
-                        </div>
-                    </div>
-                    <div class="form-group row d-flex">
-                        <button type="submit" class="btn btn-primary" style="width: 130px">Save Changes</button>
-                        <button type="button" class="btn btn-secondary ms-2" style="width: 70px" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Delete Modal -->
-<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+    `<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="CreateLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="deleteLabel">Delete Record</h4>
+                <h4 class="modal-title" id="CreateLabel">Add Income Record</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <h5>Are you sure you want to delete this record?</h5> <br>
                     <form action="income.php" method="POST" autocomplete="">
-                        <div class="form-group row">
-                            <div class="col-3 text-nowrap">
-                                <button type="submit" name="delete-income" class="btn" style="background-color: #df4b4b; color: #ffffff">Delete User</button>
+                        <div class="form-group row mt-2">
+                            <label for="name" class="col-3 col-form-label"><strong>Name</strong></label>
+                            <div class="col-9">
+                                <input type="text" class="form-control" id="name" name="name">
                             </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
+                            <div class="col-9">
+                                <select class="form-control" id="role" name="category">
+                                    <?php
+                                    $categories = "SELECT DISTINCT category FROM income";
+                                    $res = mysqli_query($con, $categories);
+                                    if (mysqli_num_rows($res) > 0) {
+                                        while($row = mysqli_fetch_array($res)) {
+                                    ?>
+                                            <option><?php echo $row["category"] ?></option>
+                                    <?php
+                                        }
+                                    ?>
+                                        <option>Other</option>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <option>Create category</option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
                             </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <label for="new-category" class="col-3 col-form-label"><strong>New Category</strong></label>
+                            <div class="col-9">
+                                <input type="text" class="form-control" id="new-category" name="new-category">
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <label for="amount" class="col-3 col-form-label"><strong>Amount</strong></label>
+                            <div class="col-9">
+                                <input type="int" class="form-control" id="amount" name="amount">
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2 mb-3">
+                            <label for="date" class="col-3 col-form-label"><strong>Date</strong></label>
+                            <div class="col-9">
+                                <input type="date" class="form-control" id="date" name="date">
+                            </div>
+                        </div>
+                        <div class="form-group row d-flex">
+                            <button type="submit" name="add-income" class="btn btn-primary" style="width: 70px">Save</button>
+                            <button type="button" class="btn btn-secondary ms-2" style="width: 70px" data-bs-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>
             </div>
+            </div>
         </div>
     </div>
-</div>
+
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="editLabel">Edit Income Record</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <form>
+                        <div class="form-group row mt-2">
+                            <label for="name" class="col-3 col-form-label"><strong>Name</strong></label>
+                            <div class="col-9">
+                                <input type="text" class="form-control" id="name">
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2">
+                            <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
+                            <div class="col-9">
+                                <select class="form-control" id="role">
+                                    <option>Salary</option>
+                                    <option>Mutual Fund</option>
+                                    <option>Crypto</option>
+                                    <option>Interest</option>
+                                    <option>Fixed Deposit</option>
+                                    <option>Others</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mt-2 mb-3">
+                            <label for="date" class="col-3 col-form-label"><strong>Date</strong></label>
+                            <div class="col-9">
+                                <input type="date" class="form-control" id="date">
+                            </div>
+                        </div>
+                        <div class="form-group row d-flex">
+                            <button type="submit" class="btn btn-primary" style="width: 130px">Save Changes</button>
+                            <button type="button" class="btn btn-secondary ms-2" style="width: 70px" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deleteLabel">Delete Record</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <h5>Are you sure you want to delete this record?</h5> <br>
+                        <form action="income.php" method="POST" autocomplete="">
+                            <div class="form-group row">
+                                <div class="col-3 text-nowrap">
+                                    <button type="submit" name="delete-income" class="btn" style="background-color: #df4b4b; color: #ffffff">Delete User</button>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function hello(id) {
+            console.log(id);
+            <?php $x = "hello"; ?>
+            console.log(<?= $x ?>);
+        }
+    </script>
+    
 
     <!-- Chart Js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -414,7 +482,8 @@ echo $_POST["id"];
             function( settings, data, dataIndex ) {
                 var min = minDate.val();
                 var max = maxDate.val();
-                var date = new Date( data[2] );
+                var date = new Date( data[3] );
+                console.log(min, max, date)
                 // var min_date = document.getElementById("min").value;
                 // var min = new Date(min_date);
                 // var max_date = document.getElementById("max").value;
@@ -440,7 +509,7 @@ echo $_POST["id"];
             maxDate = new DateTime($('#max'), {
                 format: 'MMMM Do YYYY'
             });
-        
+            console.log(minDate.val(), maxDate.val())
             // DataTables initialisation
             var table = $('#example').DataTable();
         
