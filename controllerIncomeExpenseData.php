@@ -124,7 +124,7 @@ if(isset($_POST['add-expense'])){
     }
     else {
         $id = 1;
-        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM income;");
+        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM expense;");
         $id_data = mysqli_fetch_array($res);
         if($id_data["id"] != NULL){
             $id = $id_data["id"] + 1;
