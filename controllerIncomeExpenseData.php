@@ -28,10 +28,10 @@ if(isset($_POST['add-income'])){
         $errors['empty-field'] = "Fields must not be empty!";
     }
     else {
-        $id = 0;
-        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM income WHERE email='$email';");
-        if(mysqli_num_rows($res) > 0){
-            $id_data = mysqli_fetch_array($res);
+        $id = 1;
+        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM income;");
+        $id_data = mysqli_fetch_array($res);
+        if($id_data["id"] != NULL){
             $id = $id_data["id"] + 1;
         }
         if($new_category == ""){
@@ -123,10 +123,10 @@ if(isset($_POST['add-expense'])){
         $errors['empty-field'] = "Fields must not be empty!";
     }
     else {
-        $id = 0;
-        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM expense WHERE email='$email';");
-        if(mysqli_num_rows($res) > 0){
-            $id_data = mysqli_fetch_array($res);
+        $id = 1;
+        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM income;");
+        $id_data = mysqli_fetch_array($res);
+        if($id_data["id"] != NULL){
             $id = $id_data["id"] + 1;
         }
         if($new_category == ""){
