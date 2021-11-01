@@ -1,5 +1,5 @@
 <?php require_once "controllerUserData.php";
-require_once "controllerIncomeData.php";
+require_once "controllerIncomeExpenseData.php";
 require "connection.php";
 ?>
 <?php
@@ -316,9 +316,6 @@ if($email != false && $password != false){
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h6>Keep fields empty if no change.</h6>
-                </div>
-                <div class="modal-body">
                     <div class="container">
                         <form action="income.php" method="POST" autocomplete="">
                             <input hidden id="hiddenInput1" name="hiddenInput1" />
@@ -466,43 +463,6 @@ if($email != false && $password != false){
     </script>
 
     <script>
-        // const ctx = document.getElementById('category').getContext('2d');
-        // const myChart = new Chart(ctx, {
-        //     type: 'bar',
-        //     data: {
-        //         labels: ['Mutual Fund', 'Salary', 'Crypto', 'Interest', 'FD', 'Others'],
-        //         datasets: [{
-        //             label: 'Income source from categories',
-        //             data: [12, 19, 3, 5, 2, 3],
-        //             backgroundColor: [
-        //                 'rgba(255, 99, 132, 0.2)',
-        //                 'rgba(54, 162, 235, 0.2)',
-        //                 'rgba(255, 206, 86, 0.2)',
-        //                 'rgba(75, 192, 192, 0.2)',
-        //                 'rgba(153, 102, 255, 0.2)',
-        //                 'rgba(255, 159, 64, 0.2)'
-        //             ],
-        //             borderColor: [
-        //                 'rgba(255, 99, 132, 1)',
-        //                 'rgba(54, 162, 235, 1)',
-        //                 'rgba(255, 206, 86, 1)',
-        //                 'rgba(75, 192, 192, 1)',
-        //                 'rgba(153, 102, 255, 1)',
-        //                 'rgba(255, 159, 64, 1)'
-        //             ],
-        //             borderWidth: 1
-        //         }]
-        //     },
-        //     options: {
-        //         scales: {
-        //             y: {
-        //                 beginAtZero: true
-        //             }
-        //         },
-        //         responsive: false
-        //     }
-        // });
-
         $(document).ready(function () {
             showBarGraph();
         });
@@ -518,6 +478,7 @@ if($email != false && $password != false){
                     category.push(data[i].category);
                     value.push(data[i].value);
                 }
+                console.log(category);
                 var chartdata = {
                     labels: category,
                     datasets: [
@@ -552,8 +513,6 @@ if($email != false && $password != false){
             {
                 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 let currentMonth = new Date().getMonth();
-                console.log(data);
-                console.log(currentMonth);
                 var value = [];
                 var label = [];
                 var tempMonth = "";
@@ -561,13 +520,11 @@ if($email != false && $password != false){
                     tempMonth = (currentMonth - i + 12 ) % 12;
                     label.push(months[tempMonth]);
                 }
-                console.log(label);
                 for (var i in data) {
                     value.push(data[i].value);
                 }
                 var chartdata = {
                     labels: label,
-                    // labels: Utils.months({count: 7}),
                     datasets: [
                         {
                             label: 'Income',
@@ -586,26 +543,6 @@ if($email != false && $password != false){
                 });
             });
         }
-    </script>
-
-    <script>
-        // const ctx2 = document.getElementById('time').getContext('2d');
-        // const myChart2 = new Chart(ctx2, {
-        //     type: 'line',
-        //     data: {
-        //         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        //         datasets: [{
-        //             label: 'Income over time',
-        //             data: [20, 19, 33, 20, 32, 32, 40],
-        //             fill: false,
-        //             borderColor: 'rgb(75, 192, 192)',
-        //             tension: 0.1
-        //         }]
-        //     },
-        //     options: {
-        //         responsive: false
-        //     }
-        // });
     </script>
 
     <!-- Datatables -->

@@ -107,4 +107,96 @@ if(isset($_POST['delete-income'])){
     }
 }
 
+//if user adds new expense
+if(isset($_POST['add-expense'])){
+    $name = mysqli_real_escape_string($con, $_POST['name']);
+    $category = mysqli_real_escape_string($con, $_POST['category']);
+    $new_category = "";
+    if(isset($_POST["new-category"])) {
+        $new_category = mysqli_real_escape_string($con, $_POST['new-category']);
+    }
+    $amount = mysqli_real_escape_string($con, $_POST['amount']);
+    $date = mysqli_real_escape_string($con, $_POST['date']);
+
+    if(!$name || !$category || !$amount || !$date){
+        $errors['empty-field'] = "Fields must not be empty!";
+    }
+    else {
+        $id = 0;
+        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM expense;");
+        if(mysqli_num_rows($res) > 0){
+            $id_data = mysqli_fetch_array($res);
+            $id = $id_data["id"] + 1;
+        }
+        if($new_category == ""){
+            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$category', '$date');";
+        }
+        else {
+            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$new_category', '$date');";
+        }
+        $run_query = mysqli_query($con, $add_expense);
+        if($run_query){
+            $info = "Expense added successfully!";
+            $_SESSION['info'] = $info;
+            header('Location: expense.php');
+        }else{
+            $errors['db-error'] = "Failed to add expense!";
+        }
+    }
+}
+
+//if user edits expense
+if(isset($_POST['edit-expense'])){
+
+    $id = $_POST["hiddenInput1"];
+    console_log($id);
+    $name = mysqli_real_escape_string($con, $_POST['name']);
+    $category = mysqli_real_escape_string($con, $_POST['category']);
+    $new_category = mysqli_real_escape_string($con, $_POST['new-category']);
+    $amount = mysqli_real_escape_string($con, $_POST['amount']);
+    $date = mysqli_real_escape_string($con, $_POST['date']);
+    $email = $_SESSION["email"];
+
+    if(!$id){
+        $errors['id-error'] = "ID not found.";
+    }
+    else {
+        if($new_category == ""){
+            $edit_expense = "UPDATE expense SET name='$name', value=$amount, category='$category', date='$date' WHERE email='$email' AND id=$id;";
+        }
+        else {
+            $edit_expense = "UPDATE expense SET name='$name', value=$amount, category='$new_category', date='$date' WHERE email='$email' AND id=$id;";
+        }
+        $run_query = mysqli_query($con, $edit_expense);
+        if($run_query){
+            $info = "expense edited successfully!";
+            $_SESSION['info'] = $info;
+            header('Location: expense.php');
+        }else{
+            $errors['db-error'] = "Failed to edit expense!";
+        }
+
+    }
+}
+
+//if user deletes expense
+if(isset($_POST['delete-expense'])){
+
+    $id = $_POST["hiddenInput2"];
+    if(!$id){
+        $errors['id-error'] = "ID not found.";
+    }
+    else {
+        $delete_expense = "DELETE FROM expense WHERE id = '$id';";
+        $run_query = mysqli_query($con, $delete_expense);
+        if($run_query){
+            $info = "expense deleted successfully!";
+            $_SESSION['info'] = $info;
+            header('Location: expense.php');
+        }else{
+            $errors['db-error'] = "Failed to delete expense!";
+        }
+    }
+}
+
 ?>
