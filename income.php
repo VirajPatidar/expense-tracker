@@ -60,10 +60,10 @@ if($email != false && $password != false){
                             $res = mysqli_query($con, $query);
                             if (mysqli_num_rows($res) > 0) {
                                 $amount = mysqli_fetch_array($res);
-                                echo "₹" . $amount["amount"];
-                            }
-                            else {
-                                echo "₹0";
+                                if($amount["amount"] != NULL)
+                                    echo "₹" . $amount["amount"];
+                                else
+                                    echo "₹0";
                             }
                             ?>
                         </p>
@@ -203,7 +203,7 @@ if($email != false && $password != false){
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $income_data = "SELECT * FROM income";
+                                    $income_data = "SELECT * FROM income where email = '" . $_SESSION['email'] . "';";
                                     $res = mysqli_query($con, $income_data);
                                     if (mysqli_num_rows($res) > 0) {
                                         // output data of each row
@@ -478,7 +478,6 @@ if($email != false && $password != false){
                     category.push(data[i].category);
                     value.push(data[i].value);
                 }
-                console.log(category);
                 var chartdata = {
                     labels: category,
                     datasets: [
@@ -529,8 +528,8 @@ if($email != false && $password != false){
                     datasets: [
                         {
                             label: 'Income',
-                            backgroundColor: '#49e2ff',
-                            borderColor: '#46d5f1',
+                            backgroundColor: '#3e95cd',
+                            borderColor: '#3e95cd',
                             hoverBackgroundColor: '#CCCCCC',
                             hoverBorderColor: '#666666',
                             data: value

@@ -84,7 +84,7 @@ if($email != false && $password != false){
                             </div>
                             <div class="col-2">
                                 <div class="card border-success mb-3">
-                                    <div class="card-header h6">% savings of last month<span class="fw-bold">*<span></div>
+                                    <div class="card-header h6">% savings last month<span class="fw-bold">*<span></div>
                                     <div class="card-body text-success">
                                         <h5 class="card-title"><?php echo date('F Y', mktime(0, 0, 0, date('m')-1, 1, date('Y')));?></h5>
                                         <p class="card-text display-6 text-dark">23.1%</p>
@@ -177,11 +177,11 @@ if($email != false && $password != false){
         <br>
     </div>
 
-    <div class="container">
+    <div class="container mb-5">
         <h4 class="mb-2">Graphical Analysis</h4>
         <div class="card shadow bg-body rounded">
             <div class="card-body">
-                <canvas id="incomeVsexpense" width="900" height="600" style="margin 0 auto;"></canvas>
+                <canvas id="incomeVsexpense" width="900" height="600" style="margin: 0 auto;"></canvas>
             </div>
         </div>
     </div>

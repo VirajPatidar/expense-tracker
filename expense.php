@@ -49,21 +49,22 @@ if($email != false && $password != false){
         <div class="row">
             <p class="h3 mb-3">Expense statistics in brief</p>
             <div class="col-3">
-                <div class="card border-success mb-3" style="max-width: 18rem;">
+                <div class="card border-danger mb-3" style="max-width: 18rem;">
                     <div class="card-header h6">This month's expense</div>
-                    <div class="card-body text-success">
+                    <div class="card-body text-danger">
                         <h5 class="card-title"><?php echo date('F Y'); ?></h5>
                         <p class="card-text display-4 text-dark">
                             <?php
                             $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
                             $query = "SELECT sum(value) AS amount FROM expense WHERE email = '" . $_SESSION['email'] . "' AND date >= '" . $date_min . "';";
+                            
                             $res = mysqli_query($con, $query);
                             if (mysqli_num_rows($res) > 0) {
                                 $amount = mysqli_fetch_array($res);
-                                echo "₹" . $amount["amount"];
-                            }
-                            else {
-                                echo "₹0";
+                                if($amount["amount"] != NULL)
+                                    echo "₹" . $amount["amount"];
+                                else
+                                    echo "₹0";
                             }
                             ?>
                         </p>
@@ -203,7 +204,7 @@ if($email != false && $password != false){
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $expense_data = "SELECT * FROM expense";
+                                    $expense_data = "SELECT * FROM expense where email = '" . $_SESSION['email'] . "';";
                                     $res = mysqli_query($con, $expense_data);
                                     if (mysqli_num_rows($res) > 0) {
                                         // output data of each row
@@ -530,8 +531,8 @@ if($email != false && $password != false){
                     datasets: [
                         {
                             label: 'expense',
-                            backgroundColor: '#49e2ff',
-                            borderColor: '#46d5f1',
+                            backgroundColor: '#8e5ea2',
+                            borderColor: '#8e5ea2',
                             hoverBackgroundColor: '#CCCCCC',
                             hoverBorderColor: '#666666',
                             data: value
