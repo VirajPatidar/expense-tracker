@@ -36,11 +36,11 @@ if(isset($_POST['add-income'])){
         }
         if($new_category == ""){
             console_log("new category empty");
-            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$category', '$date') WHERE email='$email';";
+            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$category', '$date');";
         }
         else {
             console_log("new category not empty");
-            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$new_category', '$date') WHERE email='$email';";
+            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$new_category', '$date');";
         }
         $run_query = mysqli_query($con, $add_income);
         if($run_query){
@@ -117,6 +117,7 @@ if(isset($_POST['add-expense'])){
     }
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
     $date = mysqli_real_escape_string($con, $_POST['date']);
+    $email = $_SESSION["email"];
 
     if(!$name || !$category || !$amount || !$date){
         $errors['empty-field'] = "Fields must not be empty!";
@@ -129,10 +130,10 @@ if(isset($_POST['add-expense'])){
             $id = $id_data["id"] + 1;
         }
         if($new_category == ""){
-            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$category', '$date') WHERE email='$email';";
+            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$category', '$date');";
         }
         else {
-            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$new_category', '$date') WHERE email='$email';";
+            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$new_category', '$date');";
         }
         $run_query = mysqli_query($con, $add_expense);
         if($run_query){
