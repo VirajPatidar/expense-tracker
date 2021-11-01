@@ -7,7 +7,7 @@ function active($currect_page){
   } 
 }
 ?>
-<nav class="navbar navbar-dark bg-dark navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container-fluid">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
