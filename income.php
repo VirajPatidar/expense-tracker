@@ -1,8 +1,8 @@
-<?php require_once "controllerUserData.php"; 
+<?php require_once "controllerUserData.php";
 require_once "controllerIncomeData.php";
 require "connection.php";
 ?>
-<?php 
+<?php
 $email = $_SESSION['email'];
 $password = $_SESSION['password'];
 if($email != false && $password != false){
@@ -83,7 +83,7 @@ if($email != false && $password != false){
                             $res = mysqli_query($con, $query);
                             if (mysqli_num_rows($res) > 0) {
                                 $amount = mysqli_fetch_array($res);
-                                if($amount["amount"] != NULL) 
+                                if($amount["amount"] != NULL)
                                     echo "₹" . $amount["amount"];
                                 else
                                     echo "₹0";
@@ -105,7 +105,7 @@ if($email != false && $password != false){
                             $res = mysqli_query($con, $query);
                             if (mysqli_num_rows($res) > 0) {
                                 $amount = mysqli_fetch_array($res);
-                                if($amount["amount"] != NULL) 
+                                if($amount["amount"] != NULL)
                                     echo "₹" . $amount["amount"];
                                 else
                                     echo "₹0";
@@ -255,7 +255,7 @@ if($email != false && $password != false){
                         <div class="form-group row mt-2">
                             <label for="OnSale" class="col-3 col-form-label"><strong>Category</strong></label>
                             <div class="col-9">
-                                <select class="form-control" id="category-create" name="category" onchange="EnableTextBox(this)">
+                                <select class="form-control" id="category-create" name="category" onclick="EnableTextBox(this)">
                                     <?php
                                     $categories = "SELECT DISTINCT category FROM income";
                                     $res = mysqli_query($con, $categories);
@@ -445,7 +445,6 @@ if($email != false && $password != false){
                     return $(this).text();
                 }).get();
 
-                console.log(data);
                 $("#hiddenInput1").val(data[0]);
                 $("#name").val(data[1]);
                 $("#category").val(data[2]).change()
@@ -461,12 +460,8 @@ if($email != false && $password != false){
             var selectedValue = ddlModels.options[ddlModels.selectedIndex].value;
             var create_input = document.getElementById("new-category-create");
             var edit_input = document.getElementById("new-category");
-            create_input.disabled = selectedValue == "Other" ? false : true;
-            edit_input.disabled = selectedValue == "Other" ? false : true;
-            if (!create_input.disabled)
-                create_input.focus();
-            if (!edit_input.disabled)
-                edit_input.focus();
+            create_input.disabled = (selectedValue == "Other" || selectedValue == "Create category") ? false : true;
+            edit_input.disabled = (selectedValue == "Other" || selectedValue == "Create category") ? false : true;
     }
     </script>
 
@@ -509,15 +504,14 @@ if($email != false && $password != false){
         // });
 
         $(document).ready(function () {
-            showGraph();
+            showBarGraph();
         });
 
-        function showGraph()
+        function showBarGraph()
         {
             $.post("getIncomeBarGraphData.php",
             function (data)
-            {   
-                console.log(data);
+            {
                 var category = [];
                 var value = [];
                 for (var i in data) {
@@ -545,24 +539,73 @@ if($email != false && $password != false){
             });
         }
     </script>
+
     <script>
-        const ctx2 = document.getElementById('time').getContext('2d');
-        const myChart2 = new Chart(ctx2, {
-            type: 'line',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [{
-                    label: 'Income over time',
-                    data: [20, 19, 33, 20, 32, 32, 40],
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: false
-            }
+        $(document).ready(function () {
+            showLineGraph();
         });
+
+        function showLineGraph() 
+        {
+            $.post("getIncomeLineGraphData.php",
+            function (data)
+            {
+                let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                let currentMonth = new Date().getMonth();
+                console.log(data);
+                console.log(currentMonth);
+                var value = [];
+                var label = [];
+                var tempMonth = "";
+                for(var i=0; i<7; i++) {
+                    tempMonth = (currentMonth - i + 12 ) % 12;
+                    label.push(months[tempMonth]);
+                }
+                console.log(label);
+                for (var i in data) {
+                    value.push(data[i].value);
+                }
+                var chartdata = {
+                    labels: label,
+                    // labels: Utils.months({count: 7}),
+                    datasets: [
+                        {
+                            label: 'Income',
+                            backgroundColor: '#49e2ff',
+                            borderColor: '#46d5f1',
+                            hoverBackgroundColor: '#CCCCCC',
+                            hoverBorderColor: '#666666',
+                            data: value
+                        }
+                    ]
+                };
+                var graphTarget = $("#time");
+                var lineGraph = new Chart(graphTarget, {
+                    type: 'line',
+                    data: chartdata
+                });
+            });
+        }
+    </script>
+
+    <script>
+        // const ctx2 = document.getElementById('time').getContext('2d');
+        // const myChart2 = new Chart(ctx2, {
+        //     type: 'line',
+        //     data: {
+        //         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        //         datasets: [{
+        //             label: 'Income over time',
+        //             data: [20, 19, 33, 20, 32, 32, 40],
+        //             fill: false,
+        //             borderColor: 'rgb(75, 192, 192)',
+        //             tension: 0.1
+        //         }]
+        //     },
+        //     options: {
+        //         responsive: false
+        //     }
+        // });
     </script>
 
     <!-- Datatables -->
@@ -600,7 +643,7 @@ if($email != false && $password != false){
                 // var min = new Date(min_date);
                 // var max_date = document.getElementById("max").value;
                 // var max = new Date(max_date);
-        
+
                 if (
                     ( min === null && max === null ) ||
                     ( min === null && date <= max ) ||
@@ -612,7 +655,7 @@ if($email != false && $password != false){
                 return false;
             }
         );
-        
+
         $(document).ready(function() {
             // Create date inputs
             minDate = new DateTime($('#min'), {
@@ -623,7 +666,7 @@ if($email != false && $password != false){
             });
             // DataTables initialisation
             var table = $('#example').DataTable();
-        
+
             // Refilter the table
             $('#min, #max').on('change', function () {
                 table.draw();

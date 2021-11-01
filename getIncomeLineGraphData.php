@@ -4,13 +4,17 @@
 
     header('Content-Type: application/json');
 
-    $sqlQuery = "SELECT SUM(value) AS value, category from income where email='" . $_SESSION["email"] . "' GROUP BY category;";
-
-    $result = mysqli_query($con, $sqlQuery);
-
     $data = array();
-    foreach ($result as $row) {
-        $data[] = $row;
+    $email = $_SESSION["email"];
+    for($i=6; $i>=0; $i--) {
+        
+        $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-$i, 1, date('Y')));
+        $date_max = date('Y-m-d', mktime(0, 0, 0, (date('m')-$i+1), 1, date('Y')));
+        $query = "SELECT sum(value) AS value FROM income WHERE email = '$email' AND date >= '$date_min' AND date < '$date_max';";
+        $res = mysqli_query($con, $query);
+        foreach ($res as $row) {
+            $data[] = $row;
+        }
     }
 
     echo json_encode($data);
