@@ -4,7 +4,8 @@
 
     header('Content-Type: application/json');
 
-    $sqlQuery = "SELECT SUM(value) AS value, category from income where email='" . $_SESSION["email"] . "' GROUP BY category;";
+    $date_min = date('Y-m-d', mktime(0, 0, 0, 1, 1, date('Y')));
+    $sqlQuery = "SELECT SUM(value) AS value, category from income where email = '" . $_SESSION['email'] . "' AND date >= '" . $date_min . "' GROUP BY category;";
 
     $result = mysqli_query($con, $sqlQuery);
 
