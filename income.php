@@ -520,6 +520,7 @@ if($email != false && $password != false){
                     tempMonth = (currentMonth - i + 12 ) % 12;
                     label.push(months[tempMonth]);
                 }
+                label.reverse();
                 for (var i in data) {
                     value.push(data[i].value);
                 }
