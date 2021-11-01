@@ -15,7 +15,6 @@ function console_log($output, $with_script_tags = true) {
 if(isset($_POST['add-income'])){
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $category = mysqli_real_escape_string($con, $_POST['category']);
-    console_log($category);
     $new_category = "";
     if(isset($_POST["new-category"])) {
         $new_category = mysqli_real_escape_string($con, $_POST['new-category']);
@@ -23,24 +22,25 @@ if(isset($_POST['add-income'])){
     }
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
     $date = mysqli_real_escape_string($con, $_POST['date']);
+    $email = $_SESSION["email"];
 
     if(!$name || !$category || !$amount || !$date){
         $errors['empty-field'] = "Fields must not be empty!";
     }
     else {
         $id = 0;
-        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM income;");
+        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM income WHERE email='$email';");
         if(mysqli_num_rows($res) > 0){
             $id_data = mysqli_fetch_array($res);
             $id = $id_data["id"] + 1;
         }
         if($new_category == ""){
             console_log("new category empty");
-            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$category', '$date');";
+            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$category', '$date') WHERE email='$email';";
         }
         else {
             console_log("new category not empty");
-            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$new_category', '$date');";
+            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$new_category', '$date') WHERE email='$email';";
         }
         $run_query = mysqli_query($con, $add_income);
         if($run_query){
@@ -95,7 +95,7 @@ if(isset($_POST['delete-income'])){
         $errors['id-error'] = "ID not found.";
     }
     else {
-        $delete_income = "DELETE FROM income WHERE id = '$id';";
+        $delete_income = "DELETE FROM income WHERE id = '$id' AND email='$email';";
         $run_query = mysqli_query($con, $delete_income);
         if($run_query){
             $info = "Income deleted successfully!";
@@ -123,16 +123,16 @@ if(isset($_POST['add-expense'])){
     }
     else {
         $id = 0;
-        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM expense;");
+        $res = mysqli_query($con, "SELECT MAX(id) AS id FROM expense WHERE email='$email';");
         if(mysqli_num_rows($res) > 0){
             $id_data = mysqli_fetch_array($res);
             $id = $id_data["id"] + 1;
         }
         if($new_category == ""){
-            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$category', '$date');";
+            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$category', '$date') WHERE email='$email';";
         }
         else {
-            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$new_category', '$date');";
+            $add_expense = "INSERT INTO expense VALUES ('$email', $id, '$name', $amount, '$new_category', '$date') WHERE email='$email';";
         }
         $run_query = mysqli_query($con, $add_expense);
         if($run_query){
@@ -187,7 +187,7 @@ if(isset($_POST['delete-expense'])){
         $errors['id-error'] = "ID not found.";
     }
     else {
-        $delete_expense = "DELETE FROM expense WHERE id = '$id';";
+        $delete_expense = "DELETE FROM expense WHERE id = '$id' AND email='$email';";
         $run_query = mysqli_query($con, $delete_expense);
         if($run_query){
             $info = "expense deleted successfully!";

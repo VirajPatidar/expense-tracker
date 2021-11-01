@@ -257,7 +257,7 @@ if($email != false && $password != false){
                             <div class="col-9">
                                 <select class="form-control" id="category-create" name="category" onclick="EnableTextBox(this)">
                                     <?php
-                                    $categories = "SELECT DISTINCT category FROM income";
+                                    $categories = "SELECT DISTINCT category FROM income WHERE email='" . $_SESSION['$email'] . "';";
                                     $res = mysqli_query($con, $categories);
                                     if (mysqli_num_rows($res) > 0) {
                                         while($row = mysqli_fetch_array($res)) {
@@ -330,7 +330,7 @@ if($email != false && $password != false){
                                 <div class="col-9">
                                     <select class="form-control" id="category" name="category" onchange="EnableTextBox(this)">
                                         <?php
-                                        $categories = "SELECT DISTINCT category FROM income";
+                                        $categories = "SELECT DISTINCT category FROM income WHERE email='" . $_SESSION['$email'] . "';";
                                         $res = mysqli_query($con, $categories);
                                         if (mysqli_num_rows($res) > 0) {
                                             while($row = mysqli_fetch_array($res)) {
