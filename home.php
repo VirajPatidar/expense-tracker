@@ -178,10 +178,18 @@ if($email != false && $password != false){
     </div>
 
     <div class="container mb-5">
-        <h4 class="mb-2">Graphical Analysis</h4>
+        <h5 class="mb-2">Graphical Analysis: Income Vs Expense</h5>
         <div class="card shadow bg-body rounded">
             <div class="card-body">
-                <canvas id="incomeVsexpense" width="900" height="600" style="margin: 0 auto;"></canvas>
+                <canvas id="income-expense" width="1200" height="600" style="margin: 0 auto;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="container mb-5">
+        <h5 class="mb-2">Graphical Analysis: Budget Vs Savings</h5>
+        <div class="card shadow bg-body rounded">
+            <div class="card-body">
+                <canvas id="budget-savings" width="1200" height="600" style="margin: 0 auto;"></canvas>
             </div>
         </div>
     </div>
@@ -220,20 +228,20 @@ if($email != false && $password != false){
     <!-- Chart Js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const ctx = document.getElementById('incomeVsexpense').getContext('2d');
-        const myChart2 = new Chart(ctx, {
+        const ctx = document.getElementById('income-expense').getContext('2d');
+        const myChart1 = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 datasets: [
                     { 
-                        data: [48200, 75000, 41100, 50200, 63500, 60900, 94700],
+                        data: [48200, 75000, 41100, 50200, 63500, 60900, 94700, 62000, 88000, 71000, 41000, 67000],
                         label: "Income",
                         borderColor: "#3e95cd",
                         fill: false
                     }, 
                     { 
-                        data: [38600, 81400, 50600, 40600, 10700, 71100, 73300],
+                        data: [38600, 81400, 50600, 40600, 10700, 71100, 73300, 60600, 50600, 70700, 63500, 60900],
                         label: "Expense",
                         borderColor: "#8e5ea2",
                         fill: false
@@ -245,7 +253,45 @@ if($email != false && $password != false){
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Income Vs Expenses over time',
+                        text: 'Income Vs Expenses over time (1 Year)',
+                    },
+                    scales: {
+                        y: {
+                            suggestedMin: 1000,
+                            suggestedMax: 100000
+                        }
+                    }
+                },
+            }
+        });
+    </script>
+    <script>
+        const ctx2 = document.getElementById('budget-savings').getContext('2d');
+        const myChart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                datasets: [
+                    { 
+                        label: "Budget",
+                        data: [48200, 75000, 41100, 50200, 63500, 60900, 94700, 62000, 88000, 71000, 41000, 67000],
+                        borderColor: "#3e95cd",
+                        backgroundColor: "#3e95cd",
+                    }, 
+                    { 
+                        label: "Savings",
+                        data: [38600, 81400, 50600, 40600, 10700, 71100, 73300, 60600, 50600, 70700, 63500, 60900],
+                        borderColor: "#8e5ea2",
+                        backgroundColor: "#8e5ea2",
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Budget Vs Savings over time (1 Year)',
                     },
                     scales: {
                         y: {
