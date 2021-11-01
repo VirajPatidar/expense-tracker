@@ -189,7 +189,7 @@ if($email != false && $password != false){
                                 class="table table-bordered text-nowrap text-center table-striped align-middle pt-3">
                                 <thead style="background-color: #f1f4fb">
                                     <tr>
-                                        <th>ID</th>
+                                        <th hidden>ID</th>
                                         <th>Name</th>
                                         <th>Category</th>
                                         <th>Amount</th>
@@ -210,7 +210,7 @@ if($email != false && $password != false){
                                         while($row = mysqli_fetch_array($res)) {
                                     ?>
                                             <tr>
-                                                <td><?php echo $row["id"]; ?></td>
+                                                <td hidden><?php echo $row["id"]; ?></td>
                                                 <td><?php echo $row["name"]; ?></td>
                                                 <td><?php echo $row["category"]; ?></td>
                                                 <td><?php echo $row["value"]; ?></td>

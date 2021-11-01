@@ -15,17 +15,12 @@ function console_log($output, $with_script_tags = true) {
 if(isset($_POST['add-income'])){
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $category = mysqli_real_escape_string($con, $_POST['category']);
-    console_log($category);
-    $new_category = "";
-    if(isset($_POST["new-category"])) {
-        $new_category = mysqli_real_escape_string($con, $_POST['new-category']);
-        console_log($new_category);
-    }
+    $new_category = mysqli_real_escape_string($con, $_POST['new-category']);
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
     $date = mysqli_real_escape_string($con, $_POST['date']);
 
     if(!$name || !$category || !$amount || !$date){
-        $errors['empty-field'] = "Fields must not be empty!";
+        $errors['empty-field'] = "Fields must not ne empty!";
     }
     else {
         $id = 0;
@@ -35,12 +30,10 @@ if(isset($_POST['add-income'])){
             $id = $id_data["id"] + 1;
         }
         if($new_category == ""){
-            console_log("new category empty");
-            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$category', '$date');";
+            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, 0, '$category', '$date');";
         }
         else {
-            console_log("new category not empty");
-            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, '$new_category', '$date');";
+            $add_income = "INSERT INTO income VALUES ('$email', $id, '$name', $amount, 0, '$new_category', '$date');";
         }
         $run_query = mysqli_query($con, $add_income);
         if($run_query){
@@ -61,11 +54,13 @@ if(isset($_POST['edit-income'])){
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $category = mysqli_real_escape_string($con, $_POST['category']);
     $new_category = mysqli_real_escape_string($con, $_POST['new-category']);
+    console_log($new_category);
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
     $date = mysqli_real_escape_string($con, $_POST['date']);
     $email = $_SESSION["email"];
 
     if(!$id){
+        console_log("hello");
         $errors['id-error'] = "ID not found.";
     }
     else {
@@ -75,13 +70,14 @@ if(isset($_POST['edit-income'])){
         else {
             $edit_income = "UPDATE income SET name='$name', value=$amount, category='$new_category', date='$date' WHERE email='$email' AND id=$id;";
         }
+        console_log($edit_income);
         $run_query = mysqli_query($con, $edit_income);
         if($run_query){
             $info = "Income edited successfully!";
             $_SESSION['info'] = $info;
             header('Location: income.php');
         }else{
-            $errors['db-error'] = "Failed to edit income!";
+            $errors['db-error'] = "Failed to delete income!";
         }
 
     }
