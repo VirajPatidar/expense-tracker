@@ -236,7 +236,7 @@ if(isset($_POST['set-budget'])){
     // Calculating savings
     $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-1, 1, date('Y')));
     $date_max = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
-    $res = $run_query($con, "SELECT id, budget FROM budget WHERE date>='$date_min' AND date<'$date_max' AND email='$email';");
+    $res = mysqli_query($con, "SELECT id, budget FROM budget WHERE date>='$date_min' AND date<'$date_max' AND email='$email';");
     if (mysqli_num_rows($res) > 0) {
         $res_data = mysqli_fetch_array($res);
         $id = $res_data["id"];
@@ -252,7 +252,4 @@ if(isset($_POST['set-budget'])){
         $run_query = mysqli_query($con, $set_savings);
     }
 }
-
-
-
 ?>

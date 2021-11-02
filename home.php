@@ -193,11 +193,11 @@ if($email != false && $password != false){
                                             <?php
                                             $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-6, 1, date('Y')));
                                             $date_max = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
-                                            $query = "SELECT AVG(savings) AS savings FROM budget WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min' AND date < '$date_max';";
+                                            $query = "SELECT SUM(savings) AS savings FROM budget WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min' AND date < '$date_max';";
                                             $res = mysqli_query($con, $query);
                                             if (mysqli_num_rows($res) > 0) {
                                                 $res_data = mysqli_fetch_array($res);
-                                                $savings = number_format((float)$res_data["savings"], 2, '.', '');
+                                                $savings = $res_data["savings"];
                                                 if($res_data["savings"] != NULL)
                                                     echo "₹" . $savings;
                                                 else
@@ -236,7 +236,7 @@ if($email != false && $password != false){
                                 echo "Budget not set!";
                             }
                             ?>
-                            <div class="progress-bar" role="progressbar" style="width: <?= $perc ?>; background-color:#1a237e !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" role="progressbar" style="width: <?= $perc ?>%; background-color:#1a237e !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                                 <?= $perc ?>
                             </div>
                         </div>
@@ -248,7 +248,23 @@ if($email != false && $password != false){
                     <div class="tab-pane fade" id="nav-income" role="tabpanel" aria-labelledby="nav-income-tab">
                         <div class="card border-primary" style="width: 23rem;">
                             <div class="card-body">
-                                <h5 class="card-title mb-0">Income earned this month: ₹140000</h5>
+                                <h5 class="card-title mb-0">
+                                    Income earned this month: 
+                                    <?php
+                                        $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                                        $query = "SELECT SUM(value) as amount FROM income WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min';";
+                                        $res = mysqli_query($con, $query);
+                                        if (mysqli_num_rows($res) > 0) {
+                                            $res_data = mysqli_fetch_array($res);
+                                            if($res_data["amount"] != NULL)
+                                                echo "₹" . $res_data["amount"];
+                                            else
+                                                echo "₹0";
+                                        }
+                                        else
+                                            echo "₹0";
+                                    ?>
+                                </h5>
                             </div>
                         </div>
                         <br>
@@ -256,14 +272,33 @@ if($email != false && $password != false){
                         <table class="table table-striped table-hover table-bordered align-middle">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">category</th>
+                                    <th scope="col">Category</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Amount</th>
                                 </tr>
                             </thead>
-                            <?php include "home_page_table_data_dump.php"; ?>
+                            <tbody>
+                                    <?php
+                                    $income_data = "SELECT * FROM income where email = '" . $_SESSION['email'] . "' ORDER BY date DESC LIMIT 10;";
+                                    $res = mysqli_query($con, $income_data);
+                                    if (mysqli_num_rows($res) > 0) {
+                                        // output data of each row
+                                        while($row = mysqli_fetch_array($res)) {
+                                    ?>
+                                            <tr>
+                                                <td><?php echo $row["name"]; ?></td>
+                                                <td><?php echo $row["category"]; ?></td>
+                                                <td><?php echo $row["date"]; ?></td>
+                                                <td><?php echo $row["value"]; ?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    } 
+                                    else
+                                        echo "0 results";
+                                    ?>
+                            </tbody>
                         </table>
                         <a href="income.php" class="btn btn-primary">Show detailed income statistics</a>
                     </div>
@@ -272,7 +307,23 @@ if($email != false && $password != false){
                     <div class="tab-pane fade" id="nav-expense" role="tabpanel" aria-labelledby="nav-expense-tab">
                         <div class="card border-danger" style="width: 21rem;">
                             <div class="card-body">
-                                <h5 class="card-title mb-0">This month's expenses: ₹80000</h5>
+                                <h5 class="card-title mb-0">
+                                    This month's expenses: 
+                                    <?php
+                                        $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                                        $query = "SELECT SUM(value) as amount FROM expense WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min';";
+                                        $res = mysqli_query($con, $query);
+                                        if (mysqli_num_rows($res) > 0) {
+                                            $res_data = mysqli_fetch_array($res);
+                                            if($res_data["amount"] != NULL)
+                                                echo "₹" . $res_data["amount"];
+                                            else
+                                                echo "₹0";
+                                        }
+                                        else
+                                            echo "₹0";
+                                    ?>
+                                </h5>
                             </div>
                         </div>
                         <br>
@@ -280,14 +331,33 @@ if($email != false && $password != false){
                         <table class="table table-striped table-hover table-bordered align-middle">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">category</th>
+                                    <th scope="col">Category</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Amount</th>
                                 </tr>
                             </thead>
-                            <?php include "home_page_table_data_dump.php"; ?>
+                            <tbody>
+                                    <?php
+                                    $expense_data = "SELECT * FROM expense where email = '" . $_SESSION['email'] . "' ORDER BY date DESC LIMIT 10;";
+                                    $res = mysqli_query($con, $expense_data);
+                                    if (mysqli_num_rows($res) > 0) {
+                                        // output data of each row
+                                        while($row = mysqli_fetch_array($res)) {
+                                    ?>
+                                            <tr>
+                                                <td><?php echo $row["name"]; ?></td>
+                                                <td><?php echo $row["category"]; ?></td>
+                                                <td><?php echo $row["date"]; ?></td>
+                                                <td><?php echo $row["value"]; ?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    } 
+                                    else
+                                        echo "0 results";
+                                    ?>
+                            </tbody>
                         </table>
                         <a href="expense.php" class="btn btn-primary">Show detailed expense statistics</a>
                     </div>
@@ -348,81 +418,187 @@ if($email != false && $password != false){
 
     <!-- Chart Js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootsrap + JQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script>
-        const ctx = document.getElementById('income-expense').getContext('2d');
-        const myChart1 = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: [
+        // const ctx = document.getElementById('income-expense').getContext('2d');
+        // const myChart1 = new Chart(ctx, {
+        //     type: 'line',
+        //     data: {
+        //         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        //         datasets: [
+        //             { 
+        //                 data: [48200, 75000, 41100, 50200, 63500, 60900, 94700, 62000, 88000, 71000, 41000, 67000],
+        //                 label: "Income",
+        //                 borderColor: "#3e95cd",
+        //                 fill: false
+        //             }, 
+        //             { 
+        //                 data: [38600, 81400, 50600, 40600, 10700, 71100, 73300, 60600, 50600, 70700, 63500, 60900],
+        //                 label: "Expense",
+        //                 borderColor: "#8e5ea2",
+        //                 fill: false
+        //             }
+        //         ]
+        //     },
+        //     options: {
+        //         responsive: false,
+        //         plugins: {
+        //             title: {
+        //                 display: true,
+        //                 text: 'Income Vs Expenses over time (1 Year)',
+        //             },
+        //             scales: {
+        //                 y: {
+        //                     suggestedMin: 1000,
+        //                     suggestedMax: 100000
+        //                 }
+        //             }
+        //         },
+        //     }
+        // });
+    </script>
+    <script>
+        $(document).ready(function () {
+            showLineGraph();
+        });
+
+        function showLineGraph() 
+        {
+            $.post("getIncomeExpenseGraphData.php",
+            function (data)
+            {
+                let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                let currentMonth = new Date().getMonth();
+                var income_values = [];
+                var expense_values = [];
+                var label = [];
+                var tempMonth = "";
+                for(var i=0; i<10; i++) {
+                    tempMonth = (currentMonth - i + 12 ) % 12;
+                    label.push(months[tempMonth]);
+                }
+                label.reverse();
+                for (var i in data) {
+                    income_values.push(data[i][0]);
+                    expense_values.push(data[i][1]);
+                }
+                var chartdata = {
+                    labels: label,
+                    datasets: [
                     { 
-                        data: [48200, 75000, 41100, 50200, 63500, 60900, 94700, 62000, 88000, 71000, 41000, 67000],
+                        data: income_values,
                         label: "Income",
                         borderColor: "#3e95cd",
                         fill: false
                     }, 
                     { 
-                        data: [38600, 81400, 50600, 40600, 10700, 71100, 73300, 60600, 50600, 70700, 63500, 60900],
+                        data: expense_values,
                         label: "Expense",
                         borderColor: "#8e5ea2",
                         fill: false
                     }
                 ]
-            },
-            options: {
-                responsive: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Income Vs Expenses over time (1 Year)',
-                    },
-                    scales: {
-                        y: {
-                            suggestedMin: 1000,
-                            suggestedMax: 100000
-                        }
-                    }
-                },
-            }
-        });
+                };
+                var graphTarget = $("#income-expense");
+                var lineGraph = new Chart(graphTarget, {
+                    type: 'line',
+                    data: chartdata
+                });
+            });
+        }
     </script>
     <script>
-        const ctx2 = document.getElementById('budget-savings').getContext('2d');
-        const myChart2 = new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: [
+        // const ctx2 = document.getElementById('budget-savings').getContext('2d');
+        // const myChart2 = new Chart(ctx2, {
+        //     type: 'bar',
+        //     data: {
+        //         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        //         datasets: [
+        //             { 
+        //                 label: "Budget",
+        //                 data: [48200, 75000, 41100, 50200, 63500, 60900, 94700, 62000, 88000, 71000, 41000, 67000],
+        //                 borderColor: "#3e95cd",
+        //                 backgroundColor: "#3e95cd",
+        //             }, 
+        //             { 
+        //                 label: "Savings",
+        //                 data: [38600, 81400, 50600, 40600, 10700, 71100, 73300, 60600, 50600, 70700, 63500, 60900],
+        //                 borderColor: "#8e5ea2",
+        //                 backgroundColor: "#8e5ea2",
+        //             }
+        //         ]
+        //     },
+        //     options: {
+        //         responsive: false,
+        //         plugins: {
+        //             title: {
+        //                 display: true,
+        //                 text: 'Budget Vs Savings over time (1 Year)',
+        //             },
+        //             scales: {
+        //                 y: {
+        //                     suggestedMin: 1000,
+        //                     suggestedMax: 100000
+        //                 }
+        //             }
+        //         },
+        //     }
+        // });
+    </script>
+    <script>
+        $(document).ready(function () {
+            showBarGraph();
+        });
+
+        function showBarGraph() 
+        {
+            $.post("getBudgetSavingsGraphData.php",
+            function (data)
+            {
+                console.log(data);
+                let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                let currentMonth = new Date().getMonth();
+                var budget_values = [];
+                var savings_values = [];
+                var label = [];
+                var tempMonth = "";
+                for(var i=0; i<10; i++) {
+                    tempMonth = (currentMonth - i + 12 ) % 12;
+                    label.push(months[tempMonth]);
+                }
+                label.reverse();
+                for (var i in data) {
+                    budget_values.push(data[i]['budget']);
+                    savings_values.push(data[i]['savings']);
+                }
+                console.log(budget_values);
+                console.log(savings_values);
+                var chartdata = {
+                    labels: label,
+                    datasets: [
                     { 
-                        label: "Budget",
-                        data: [48200, 75000, 41100, 50200, 63500, 60900, 94700, 62000, 88000, 71000, 41000, 67000],
+                        data: budget_values,
+                        label: "Income",
                         borderColor: "#3e95cd",
                         backgroundColor: "#3e95cd",
                     }, 
                     { 
-                        label: "Savings",
-                        data: [38600, 81400, 50600, 40600, 10700, 71100, 73300, 60600, 50600, 70700, 63500, 60900],
+                        data: savings_values,
+                        label: "Expense",
                         borderColor: "#8e5ea2",
                         backgroundColor: "#8e5ea2",
                     }
                 ]
-            },
-            options: {
-                responsive: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Budget Vs Savings over time (1 Year)',
-                    },
-                    scales: {
-                        y: {
-                            suggestedMin: 1000,
-                            suggestedMax: 100000
-                        }
-                    }
-                },
-            }
-        });
+                };
+                var graphTarget = $("#budget-savings");
+                var lineGraph = new Chart(graphTarget, {
+                    type: 'bar',
+                    data: chartdata
+                });
+            });
+        }
     </script>
 
 </body>

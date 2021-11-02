@@ -192,8 +192,8 @@ if($email != false && $password != false){
                                         <th hidden>ID</th>
                                         <th>Name</th>
                                         <th>Category</th>
-                                        <th>Amount</th>
                                         <th>Date</th>
+                                        <th>Amount</th>
                                         <th>
                                             <a href="#create" class="btn p-2" style="height: 2.5em; width: 2.5em; "
                                                 data-bs-toggle="modal"><i class="fa fa-lg fa-plus-circle"
@@ -213,8 +213,8 @@ if($email != false && $password != false){
                                                 <td hidden><?php echo $row["id"]; ?></td>
                                                 <td><?php echo $row["name"]; ?></td>
                                                 <td><?php echo $row["category"]; ?></td>
-                                                <td><?php echo $row["value"]; ?></td>
                                                 <td><?php echo $row["date"]; ?></td>
+                                                <td><?php echo $row["value"]; ?></td>
                                                 <td>
                                                     <button type="submit" class="btn p-2 editBtn" style="height: 2.5em; width: 2.5em; "><i class="fa fa-lg fa-edit"></i></button>
                                                     <button type="submit" class="btn p-2 deleteBtn" style="height: 2.5em; width: 2.5em; "><i class="fa fa-lg fa-trash"></i></button>
@@ -577,11 +577,7 @@ if($email != false && $password != false){
             function( settings, data, dataIndex ) {
                 var min = minDate.val();
                 var max = maxDate.val();
-                var date = new Date( data[4] );
-                // var min_date = document.getElementById("min").value;
-                // var min = new Date(min_date);
-                // var max_date = document.getElementById("max").value;
-                // var max = new Date(max_date);
+                var date = new Date( data[3] );
 
                 if (
                     ( min === null && max === null ) ||
