@@ -1,4 +1,7 @@
-<?php require_once "controllerUserData.php"; ?>
+<?php require_once "controllerUserData.php"; 
+require_once "controllerIncomeExpenseData.php";
+require "connection.php";
+?>
 <?php 
 $email = $_SESSION['email'];
 $password = $_SESSION['password'];
@@ -60,7 +63,22 @@ if($email != false && $password != false){
                                     <div class="card-header h6">Current Monthly Budget</div>
                                     <div class="card-body text-danger">
                                         <h5 class="card-title"><?php echo date('F Y'); ?></h5>
-                                        <p class="card-text display-6 text-dark">₹110000</p>
+                                        <p class="card-text display-6 text-dark">
+                                            <?php
+                                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                                            $query = "SELECT budget FROM budget WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min';";
+                                            $res = mysqli_query($con, $query);
+                                            if (mysqli_num_rows($res) > 0) {
+                                                $res_data = mysqli_fetch_array($res);
+                                                if($res_data["budget"] != NULL)
+                                                    echo "₹" . $res_data["budget"];
+                                                else
+                                                    echo "₹0";
+                                            }
+                                            else
+                                                echo "₹0";
+                                            ?>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +87,23 @@ if($email != false && $password != false){
                                     <div class="card-header h6">Previous month's budget</div>
                                     <div class="card-body text-danger">
                                         <h5 class="card-title"><?php echo date('F Y', mktime(0, 0, 0, date('m')-1, 1, date('Y')));?></h5>
-                                        <p class="card-text display-6 text-dark">₹100000</p>
+                                        <p class="card-text display-6 text-dark">
+                                            <?php
+                                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-1, 1, date('Y')));
+                                            $date_max = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                                            $query = "SELECT budget FROM budget WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min' AND date < '$date_max';";
+                                            $res = mysqli_query($con, $query);
+                                            if (mysqli_num_rows($res) > 0) {
+                                                $res_data = mysqli_fetch_array($res);
+                                                if($res_data["budget"] != NULL)
+                                                    echo "₹" . $res_data["budget"];
+                                                else
+                                                    echo "₹0";
+                                            }
+                                            else
+                                                echo "₹0";
+                                            ?>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -78,7 +112,23 @@ if($email != false && $password != false){
                                     <div class="card-header h6">Previous month's savings<span class="fw-bold">*<span></div>
                                     <div class="card-body text-success">
                                         <h5 class="card-title"><?php echo date('F Y', mktime(0, 0, 0, date('m')-1, 1, date('Y')));?></h5>
-                                        <p class="card-text display-6 text-dark">₹30000</p>
+                                        <p class="card-text display-6 text-dark">
+                                            <?php
+                                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-1, 1, date('Y')));
+                                            $date_max = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                                            $query = "SELECT savings FROM budget WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min' AND date < '$date_max';";
+                                            $res = mysqli_query($con, $query);
+                                            if (mysqli_num_rows($res) > 0) {
+                                                $res_data = mysqli_fetch_array($res);
+                                                if($res_data["savings"] != NULL)
+                                                    echo "₹" . $res_data["savings"];
+                                                else
+                                                    echo "₹0";
+                                            }
+                                            else
+                                                echo "₹0";
+                                            ?>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +137,24 @@ if($email != false && $password != false){
                                     <div class="card-header h6">% savings last month<span class="fw-bold">*<span></div>
                                     <div class="card-body text-success">
                                         <h5 class="card-title"><?php echo date('F Y', mktime(0, 0, 0, date('m')-1, 1, date('Y')));?></h5>
-                                        <p class="card-text display-6 text-dark">23.1%</p>
+                                        <p class="card-text display-6 text-dark">
+                                            <?php
+                                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-1, 1, date('Y')));
+                                            $date_max = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                                            $query = "SELECT savings, budget FROM budget WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min' AND date < '$date_max';";
+                                            $res = mysqli_query($con, $query);
+                                            if (mysqli_num_rows($res) > 0) {
+                                                $res_data = mysqli_fetch_array($res);
+                                                if($res_data["budget"] == 0)
+                                                    echo '-';
+                                                else {
+                                                    $perc = ($res_data["savings"] / $res_data["budget"]) * 100;
+                                                    $perc = number_format((float)$perc, 2, '.', '');
+                                                    echo $perc . "%";
+                                                }
+                                            }
+                                            ?>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +163,24 @@ if($email != false && $password != false){
                                     <div class="card-header h6">Average savings of last 6 months</div>
                                     <div class="card-body text-success">
                                         <h5 class="card-title"><?php echo date('M', mktime(0, 0, 0, date('m')-5, 1, date('Y')));?> to <?php echo date('M Y', mktime(0, 0, 0, date('m'), 1, date('Y')));?></h5>
-                                        <p class="card-text display-6 text-dark">₹27000</p>
+                                        <p class="card-text display-6 text-dark">
+                                            <?php
+                                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-6, 1, date('Y')));
+                                            $date_max = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                                            $query = "SELECT AVG(savings) AS savings FROM budget WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min' AND date < '$date_max';";
+                                            $res = mysqli_query($con, $query);
+                                            if (mysqli_num_rows($res) > 0) {
+                                                $res_data = mysqli_fetch_array($res);
+                                                $savings = number_format((float)$res_data["savings"], 2, '.', '');
+                                                if($res_data["savings"] != NULL)
+                                                    echo "₹" . $savings;
+                                                else
+                                                    echo "₹0";
+                                            }
+                                            else
+                                                echo "₹0";
+                                            ?>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +189,24 @@ if($email != false && $password != false){
                                     <div class="card-header h6">Total savings of last 6 months</div>
                                     <div class="card-body text-success">
                                         <h5 class="card-title"><?php echo date('M', mktime(0, 0, 0, date('m')-5, 1, date('Y')));?> to <?php echo date('M Y', mktime(0, 0, 0, date('m'), 1, date('Y')));?></h5>
-                                        <p class="card-text display-6 text-dark">₹180000</p>
+                                        <p class="card-text display-6 text-dark">
+                                            <?php
+                                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m')-6, 1, date('Y')));
+                                            $date_max = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                                            $query = "SELECT AVG(savings) AS savings FROM budget WHERE email = '" . $_SESSION['email'] . "' AND date >= '$date_min' AND date < '$date_max';";
+                                            $res = mysqli_query($con, $query);
+                                            if (mysqli_num_rows($res) > 0) {
+                                                $res_data = mysqli_fetch_array($res);
+                                                $savings = number_format((float)$res_data["savings"], 2, '.', '');
+                                                if($res_data["savings"] != NULL)
+                                                    echo "₹" . $savings;
+                                                else
+                                                    echo "₹0";
+                                            }
+                                            else
+                                                echo "₹0";
+                                            ?>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +218,27 @@ if($email != false && $password != false){
 
                         <h5 class="mt-1">% of budget spent this month</h5>
                         <div class="progress mb-3" style="height: 20px;">
-                            <div class="progress-bar" role="progressbar" style="width: 73%; background-color:#1a237e !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">73%</div>
+                            <?php
+                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                            $res = mysqli_query($con, "SELECT budget FROM budget WHERE date>='$date_min' AND email='" . $_SESSION['email'] . "';");
+                            if (mysqli_num_rows($res) > 0) {
+                                $res_data = mysqli_fetch_array($res);
+                                $budget = $res_data["budget"];
+                                $get_expense = "SELECT SUM(value) AS amount FROM expense WHERE date >= '$date_min' AND email = '" . $_SESSION['email'] . "'";
+                                $expense = mysqli_query($con, $get_expense);
+                                $expense_data = mysqli_fetch_array($expense);
+                                if($expense_data["amount"] == NULL) {
+                                    $expense_data["amount"] = 0;
+                                }
+                                $perc = ($expense_data["amount"] / $budget) * 100;
+                            }
+                            else {
+                                echo "Budget not set!";
+                            }
+                            ?>
+                            <div class="progress-bar" role="progressbar" style="width: <?= $perc ?>; background-color:#1a237e !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                <?= $perc ?>
+                            </div>
                         </div>
                         <br>
                         <a href="#budget" class="btn btn-primary" data-bs-toggle="modal">Set or Change Budget</a>
@@ -204,16 +325,16 @@ if($email != false && $password != false){
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <form>
+                    <form action="home.php", method="POST">
                         <div class="form-group row mt-2">
                             <label for="budget" class="col-4 col-form-label"><strong>Budget Value</strong></label>
                             <div class="col-8">
-                                <input type="number" class="form-control" id="budget">
+                                <input type="number" class="form-control" id="budget" name="budget">
                             </div>
                         </div>
                         <br>
                         <div class="form-group row d-flex">
-                            <button type="submit" class="btn btn-primary" style="width: 70px">Save</button>
+                            <button type="submit" class="btn btn-primary" style="width: 70px" name="set-budget">Save</button>
                             <button type="button" class="btn btn-secondary ms-2" style="width: 70px" data-bs-dismiss="modal">Close</button>
                         </div>
                     </form>
