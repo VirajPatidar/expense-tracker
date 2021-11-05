@@ -153,6 +153,9 @@ if($email != false && $password != false){
                                                     echo $perc . "%";
                                                 }
                                             }
+                                            else {
+                                                echo '0%';
+                                            }
                                             ?>
                                         </p>
                                     </div>
@@ -233,11 +236,12 @@ if($email != false && $password != false){
                                 $perc = ($expense_data["amount"] / $budget) * 100;
                             }
                             else {
-                                echo "Budget not set!";
+                                echo "* Budget not set !";
+                                $perc = 0;
                             }
                             ?>
                             <div class="progress-bar" role="progressbar" style="width: <?= $perc ?>%; background-color:#1a237e !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                                <?= $perc ?>
+                                <?= $perc ?>%
                             </div>
                         </div>
                         <br>
@@ -414,7 +418,6 @@ if($email != false && $password != false){
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <!-- Chart Js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
