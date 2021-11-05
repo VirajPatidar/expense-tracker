@@ -45,13 +45,17 @@ if($email != false && $password != false){
     <div class="container">
         <div class="card shadow">
             <div class="card-header">
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <ul  class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                    <li class="nav-item">
                         <button class="nav-link active" id="nav-budget-tab" data-bs-toggle="tab" data-bs-target="#nav-budget" type="button" role="tab" aria-controls="nav-budget" aria-selected="true">Budget & Savings</button>
+                    </li>
+                    <li class="nav-item">
                         <button class="nav-link" id="nav-income-tab" data-bs-toggle="tab" data-bs-target="#nav-income" type="button" role="tab" aria-controls="nav-income" aria-selected="false">Income</button>
+                    </li>
+                    <li class="nav-item">
                         <button class="nav-link" id="nav-expense-tab" data-bs-toggle="tab" data-bs-target="#nav-expense" type="button" role="tab" aria-controls="nav-expense" aria-selected="false">Expenses</button>
-                    </div>
-                </nav>
+                    </li>
+                </ul>
             </div>
 
             <div class="card-body">
@@ -219,7 +223,6 @@ if($email != false && $password != false){
                         <p class="card-text mb-0"><span class="fw-bold">* % savings of last month</span> = (Previous month's savings &divide; Previous month's budget) &times; 100</p>
                         <br>
 
-                        <h5 class="mt-1">% of budget spent this month</h5>
                         <?php
                         $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
                         $res = mysqli_query($con, "SELECT budget FROM budget WHERE date>='$date_min' AND email='" . $_SESSION['email'] . "';");
@@ -234,29 +237,36 @@ if($email != false && $password != false){
                             }
                             $perc = ($expense_data["amount"] / $budget) * 100;
                             $perc = number_format((float)$perc, 2, '.', '');
-                            if ($perc > 100) {
-                        ?>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-                            <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-                                <path
-                                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                            </symbol>
-                        </svg>
-                        <div class="alert alert-danger d-flex align-items-center" role="alert" style="max-width: 320px;">
-                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-                            <div>
-                                You have exceeded your budget !!!
-                            </div>
-                        </div>
-                        
-                        <div class="progress mb-3" style="height: 20px;">
-                        <?php
-                            }
                         }
                         else {
-                            echo "* Budget not set !";
                             $perc = 0;
+                        }
+                        ?>
+                        <?php
+                        if($perc > 100) {
+                        ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                                <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                </symbol>
+                            </svg>
+                            <div class="alert alert-danger d-flex align-items-center" role="alert" style="max-width: 320px;">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                                    <use xlink:href="#exclamation-triangle-fill" />
+                                </svg>
+                                <div>
+                                    You have exceeded your budget !!!
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                        <h5 class="mt-1">% of budget spent this month</h5>
+                        <div class="progress mb-3" style="height: 20px;">
+                        <?php
+                        if($perc == 0) {
+                            echo "* Budget not set !";
                         }
                         ?>
                             <div class="progress-bar" role="progressbar" style="width: <?= $perc ?>%; background-color:#1a237e !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
@@ -264,7 +274,7 @@ if($email != false && $password != false){
                             </div>
                         </div>
                         <br>
-                        <a href="#budget" class="btn btn-primary" data-bs-toggle="modal">Set or Change Budget</a>
+                        <a href="#budget_modal" class="btn btn-primary" data-bs-toggle="modal">Set or Change Budget</a>
                     </div>
 
 
@@ -409,7 +419,7 @@ if($email != false && $password != false){
     </div>
 
     <!--Budget Modal-->
-    <div class="modal fade" id="budget" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal fade" id="budget_modal" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
             <div class="modal-header">
