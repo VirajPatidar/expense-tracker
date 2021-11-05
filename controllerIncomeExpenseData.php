@@ -179,7 +179,7 @@ if(isset($_POST['edit-expense'])){
 //if user deletes expense
 if(isset($_POST['delete-expense'])){
 
-    $id = $_POST["hiddenInput"];
+    $id = $_POST["hiddenInput2"];
     if(!$id){
         $errors['id-error'] = "ID not found.";
     }
