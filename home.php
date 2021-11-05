@@ -220,26 +220,45 @@ if($email != false && $password != false){
                         <br>
 
                         <h5 class="mt-1">% of budget spent this month</h5>
+                        <?php
+                        $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+                        $res = mysqli_query($con, "SELECT budget FROM budget WHERE date>='$date_min' AND email='" . $_SESSION['email'] . "';");
+                        if (mysqli_num_rows($res) > 0) {
+                            $res_data = mysqli_fetch_array($res);
+                            $budget = $res_data["budget"];
+                            $get_expense = "SELECT SUM(value) AS amount FROM expense WHERE date >= '$date_min' AND email = '" . $_SESSION['email'] . "'";
+                            $expense = mysqli_query($con, $get_expense);
+                            $expense_data = mysqli_fetch_array($expense);
+                            if($expense_data["amount"] == NULL) {
+                                $expense_data["amount"] = 0;
+                            }
+                            $perc = ($expense_data["amount"] / $budget) * 100;
+                            $perc = number_format((float)$perc, 2, '.', '');
+                            if ($perc > 100) {
+                        ?>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                            <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+                                <path
+                                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                            </symbol>
+                        </svg>
+                        <div class="alert alert-danger d-flex align-items-center" role="alert" style="max-width: 320px;">
+                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                            <div>
+                                You have exceeded your budget !!!
+                            </div>
+                        </div>
+                        
                         <div class="progress mb-3" style="height: 20px;">
-                            <?php
-                            $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
-                            $res = mysqli_query($con, "SELECT budget FROM budget WHERE date>='$date_min' AND email='" . $_SESSION['email'] . "';");
-                            if (mysqli_num_rows($res) > 0) {
-                                $res_data = mysqli_fetch_array($res);
-                                $budget = $res_data["budget"];
-                                $get_expense = "SELECT SUM(value) AS amount FROM expense WHERE date >= '$date_min' AND email = '" . $_SESSION['email'] . "'";
-                                $expense = mysqli_query($con, $get_expense);
-                                $expense_data = mysqli_fetch_array($expense);
-                                if($expense_data["amount"] == NULL) {
-                                    $expense_data["amount"] = 0;
-                                }
-                                $perc = ($expense_data["amount"] / $budget) * 100;
+                        <?php
                             }
-                            else {
-                                echo "* Budget not set !";
-                                $perc = 0;
-                            }
-                            ?>
+                        }
+                        else {
+                            echo "* Budget not set !";
+                            $perc = 0;
+                        }
+                        ?>
                             <div class="progress-bar" role="progressbar" style="width: <?= $perc ?>%; background-color:#1a237e !important;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                                 <?= $perc ?>%
                             </div>
