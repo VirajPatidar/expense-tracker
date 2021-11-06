@@ -468,6 +468,21 @@ if($email != false && $password != false){
             showBarGraph();
         });
 
+        function dynamicColors() {
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            return "rgba(" + r + "," + g + "," + b + ", 0.6)";
+        }
+
+        function generateColors(a) {
+            var pool = [];
+            for(i = 0; i < a; i++) {
+                pool.push(dynamicColors());
+            }
+            return pool;
+        }
+
         function showBarGraph()
         {
             $.post("getExpenseBarGraphData.php",
@@ -479,15 +494,16 @@ if($email != false && $password != false){
                     category.push(data[i].category);
                     value.push(data[i].value);
                 }
+
+                var colors = generateColors(category.length); 
+                
                 var chartdata = {
                     labels: category,
                     datasets: [
                         {
                             label: 'expense',
-                            backgroundColor: '#49e2ff',
-                            borderColor: '#46d5f1',
-                            hoverBackgroundColor: '#CCCCCC',
-                            hoverBorderColor: '#666666',
+                            backgroundColor: colors,
+                            borderColor: colors,
                             data: value
                         }
                     ]
@@ -495,7 +511,16 @@ if($email != false && $password != false){
                 var graphTarget = $("#category");
                 var barGraph = new Chart(graphTarget, {
                     type: 'bar',
-                    data: chartdata
+                    data: chartdata,
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Category wise expense distribution (1 year)',
+                            },
+                        },
+                    }
                 });
             });
         }
@@ -542,7 +567,16 @@ if($email != false && $password != false){
                 var graphTarget = $("#time");
                 var lineGraph = new Chart(graphTarget, {
                     type: 'line',
-                    data: chartdata
+                    data: chartdata,
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Expenses over time (7 months)',
+                            },
+                        },
+                    }
                 });
             });
         }

@@ -523,20 +523,29 @@ if($email != false && $password != false){
                         data: income_values,
                         label: "Income",
                         borderColor: "#3e95cd",
-                        fill: false
+                        backgroundColor: "#3e95cd",
                     }, 
                     { 
                         data: expense_values,
                         label: "Expense",
                         borderColor: "#8e5ea2",
-                        fill: false
+                        backgroundColor: "#8e5ea2",
                     }
                 ]
                 };
                 var graphTarget = $("#income-expense");
                 var lineGraph = new Chart(graphTarget, {
                     type: 'line',
-                    data: chartdata
+                    data: chartdata,
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Income Vs Expenses over time (1 Year)',
+                            },
+                        },
+                    }
                 });
             });
         }
@@ -627,7 +636,16 @@ if($email != false && $password != false){
                 var graphTarget = $("#budget-savings");
                 var lineGraph = new Chart(graphTarget, {
                     type: 'bar',
-                    data: chartdata
+                    data: chartdata,
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Budget Vs Savings over time (1 Year)',
+                            },
+                        },
+                    }
                 });
             });
         }
