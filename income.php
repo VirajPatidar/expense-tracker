@@ -394,14 +394,10 @@ if($email != false && $password != false){
                     <div class="container">
                         <h5>Are you sure you want to delete this record?</h5> <br>
                         <form action="income.php" method="POST" autocomplete="">
-                            <div class="form-group row">
+                            <div class="form-group row d-flex">
                                 <input hidden id="hiddenInput2" name="hiddenInput2" />
-                                <div class="col-3 text-nowrap">
-                                    <button type="submit" name="delete-income" class="btn" style="background-color: #df4b4b; color: #ffffff">Delete User</button>
-                                </div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
+                                <button type="submit" name="delete-income" class="btn" style="width: 130px; background-color: #df4b4b; color: #ffffff">Delete Record</button>
+                                <button type="button" class="btn btn-secondary ms-2" style="width: 70px"  data-bs-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
@@ -447,8 +443,8 @@ if($email != false && $password != false){
                 $("#hiddenInput1").val(data[0]);
                 $("#name").val(data[1]);
                 $("#category").val(data[2]).change()
-                $("#amount").val(data[3]);
-                $("#date").val(data[4]);
+                $("#date").val(data[3]);
+                $("#amount").val(data[4]);
             })
 
         })

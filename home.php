@@ -542,7 +542,7 @@ if($email != false && $password != false){
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Income Vs Expenses over time (1 Year)',
+                                text: 'Income Vs Expenses over time (10 Months)',
                             },
                         },
                     }
@@ -642,7 +642,7 @@ if($email != false && $password != false){
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Budget Vs Savings over time (1 Year)',
+                                text: 'Budget Vs Savings over time (10 Months)',
                             },
                         },
                     }
