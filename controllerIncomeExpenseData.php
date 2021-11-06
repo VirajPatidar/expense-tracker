@@ -206,11 +206,11 @@ if(isset($_POST['set-budget'])){
     else {
 
         $date = date('Y-m-d');
-        $res = mysqli_query($con, "SELECT id FROM budget WHERE date>='$date';");
+        $res = mysqli_query($con, "SELECT id FROM budget WHERE date>='$date' AND email='$email';");
         if (mysqli_num_rows($res) > 0) {
             $res_data = mysqli_fetch_array($res);
             $id = $res_data["id"];
-            $set_budget = "UPDATE budget SET budget=$budget WHERE id=$id;";
+            $set_budget = "UPDATE budget SET budget=$budget WHERE id=$id AND email='$email';";
             $run_query = mysqli_query($con, $set_budget);
         }
         else {
