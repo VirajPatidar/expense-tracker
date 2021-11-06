@@ -621,13 +621,13 @@ if($email != false && $password != false){
                     datasets: [
                     { 
                         data: budget_values,
-                        label: "Income",
+                        label: "Budget",
                         borderColor: "#3e95cd",
                         backgroundColor: "#3e95cd",
                     }, 
                     { 
                         data: savings_values,
-                        label: "Expense",
+                        label: "Savings",
                         borderColor: "#8e5ea2",
                         backgroundColor: "#8e5ea2",
                     }
