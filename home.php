@@ -265,7 +265,7 @@ if($email != false && $password != false){
                         <h5 class="mt-1">% of budget spent this month</h5>
                         <div class="progress mb-3" style="height: 20px;">
                         <?php
-                        if($perc == 0) {
+                        if($perc == 0 && mysqli_num_rows($res) == 0) {
                             echo "* Budget not set !";
                         }
                         ?>
