@@ -225,7 +225,7 @@ if($email != false && $password != false){
 
                         <?php
                         $date_min = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
-                        $res = mysqli_query($con, "SELECT budget FROM budget WHERE date>='$date_min' AND email='" . $_SESSION['email'] . "';");
+                        $res = mysqli_query($con, "SELECT budget FROM budget WHERE date>='$date_min' AND email='" . $_SESSION['email'] . "' ORDER BY date DESC;");
                         if (mysqli_num_rows($res) > 0) {
                             $res_data = mysqli_fetch_array($res);
                             $budget = $res_data["budget"];
