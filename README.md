@@ -1,7 +1,7 @@
 # expense-tracker
 _Expense-tracker is a project built to keep track of daily expenditures and income._
 
-**Link to the website:** [https://income-expense-tracker.000webhostapp.com/](https://income-expense-tracker.000webhostapp.com/)
+**Link to the website:** [https://income-expense-trackerr.000webhostapp.com/](https://income-expense-trackerr.000webhostapp.com/)
 <br/>
 
 
